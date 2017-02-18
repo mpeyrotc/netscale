@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
-import ConfigParser
+#import ConfigParser
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,9 +21,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-config = ConfigParser.ConfigParser()
-config.read("config.ini")
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', config.get('django', 'SecretKey'))
+#config = ConfigParser.ConfigParser()
+#config.read("config.ini")
+#SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', config.get('django', 'SecretKey'))
+
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -78,14 +80,25 @@ WSGI_APPLICATION = 'netscale.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#        'NAME': os.environ.get('DB_NAME', config.get('postgres', 'DB_NAME')),
+#        'USER': os.environ.get('DB_USER', config.get('postgres', 'DB_USER')),
+#        'PASSWORD': os.environ.get('DB_PASSWORD', config.get('postgres', 'DB_PASSWORD')),
+#        'HOST': os.environ.get('DB_HOST', config.get('postgres', 'DB_HOST')),
+#        'PORT': os.environ.get('DB_PORT', config.get('postgres', 'DB_PORT')),
+#    }
+#}
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DB_NAME', config.get('postgres', 'DB_NAME')),
-        'USER': os.environ.get('DB_USER', config.get('postgres', 'DB_USER')),
-        'PASSWORD': os.environ.get('DB_PASSWORD', config.get('postgres', 'DB_PASSWORD')),
-        'HOST': os.environ.get('DB_HOST', config.get('postgres', 'DB_HOST')),
-        'PORT': os.environ.get('DB_PORT', config.get('postgres', 'DB_PORT')),
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
 
