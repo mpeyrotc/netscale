@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>NetScale</title>
-</head>
-<body>
+<html>
+  <head>
+    <title>Gmail API Quickstart</title>
+    <meta charset='utf-8' />
+  </head>
+  <body>
+    <p>Gmail API Quickstart</p>
 
     <!--Add buttons to initiate auth sequence and sign out-->
-    <button id="authorize-button">Authorize</button>
-    <button id="signout-button">Sign Out</button>
+    <button id="authorize-button" style="display: none;">Authorize</button>
+    <button id="signout-button" style="display: none;">Sign Out</button>
 
     <pre id="content"></pre>
 
@@ -61,7 +62,6 @@
         if (isSignedIn) {
           authorizeButton.style.display = 'none';
           signoutButton.style.display = 'block';
-
           listLabels();
         } else {
           authorizeButton.style.display = 'block';
@@ -123,8 +123,5 @@
       onload="this.onload=function(){};handleClientLoad()"
       onreadystatechange="if (this.readyState === 'complete') this.onload()">
     </script>
-
-
-
-</body>
+  </body>
 </html>
