@@ -63,6 +63,17 @@
           authorizeButton.style.display = 'none';
           signoutButton.style.display = 'block';
           listLabels();
+
+          gapi.client.load('plus','v1', function(){
+            var request = gapi.client.plus.people.get({
+                'userId': 'me'
+            });
+
+            request.execute(function(resp) {
+                document.getElementById('status').innerHTML = 'you are logged in: ' + resp.displayName;
+            });
+        });
+
         } else {
           authorizeButton.style.display = 'block';
           signoutButton.style.display = 'none';
@@ -123,5 +134,7 @@
       onload="this.onload=function(){};handleClientLoad()"
       onreadystatechange="if (this.readyState === 'complete') this.onload()">
     </script>
+
+  <p id="status"></p>
   </body>
 </html>
