@@ -61,10 +61,19 @@
         if (isSignedIn) {
           authorizeButton.style.display = 'none';
           signoutButton.style.display = 'block';
+
+          document.getElementById('status').innerHTML = 'You are logged in!';
+          signoutButton.style.visibility="hidden";
+          authorizeButton.style.visibility="visible";
+
           listLabels();
         } else {
           authorizeButton.style.display = 'block';
           signoutButton.style.display = 'none';
+
+          document.getElementById('status').innerHTML = 'Please log ' + 'into this app.';
+          authorizeButton.style.visibility="hidden";
+          signoutButton.style.visibility="visible";
         }
       }
 
@@ -122,6 +131,8 @@
       onload="this.onload=function(){};handleClientLoad()"
       onreadystatechange="if (this.readyState === 'complete') this.onload()">
     </script>
+
+<p id="status"></p>
 
 </body>
 </html>
