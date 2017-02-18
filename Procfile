@@ -1,1 +1,1 @@
-web: gunicorn GoVector.wsgi --log-file -
+web: gunicorn netscale.wsgi --log-file -
