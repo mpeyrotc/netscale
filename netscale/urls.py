@@ -15,9 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-import netscale.views
+import mainApp.views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', netscale.views.home, name='home')
+    url(r'^$', mainApp.views.home, name='home')
 ]
