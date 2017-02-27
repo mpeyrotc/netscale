@@ -55,6 +55,22 @@
     }
 
     /**
+     * Get Message with given ID.
+     *
+     * @param  {String} userId User's email address. The special value 'me'
+     * can be used to indicate the authenticated user.
+     * @param  {String} messageId ID of Message to get.
+     * @param  {Function} callback Function to call when the request is complete.
+     */
+    function getMessage(userId, messageId, callback) {
+        var request = gapi.client.gmail.users.messages.get({
+            'userId': userId,
+            'id': messageId
+        });
+        request.execute(callback);
+    }
+
+    /**
      *  Called when the signed in status changes, to update the UI
      *  appropriately. After a sign-in, the API is called.
      */
@@ -66,9 +82,11 @@
 
 
             listMessages('me', function (response) {
-                for (i = 0; i < response.length; i++) {
+                for (i = 0; i < 10; i++) {
                     var message = response[i];
-                    alert(JSON.stringify(message, null, 4));
+                    getMessage('me', message.id, function (response2) {
+                       appendPre(response2.body);
+                    });
                 }
             });
 
