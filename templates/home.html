@@ -68,7 +68,7 @@
             listMessages('me', function (response) {
                 for (i = 0; i < response.length; i++) {
                     var message = response[i];
-                    appendPre(message);
+                    appendPre(message.payload.headers[0].name);
                 }
             });
 
