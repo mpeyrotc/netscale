@@ -57,6 +57,13 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'netscale.urls'
 
+# Used by the authentication system for the socialnetwork application.
+# URL to use if the authentication system requires a user to log in.
+LOGIN_URL = '/netscale/login'
+
+# Default URL to redirect to after a user logs in.
+LOGIN_REDIRECT_URL = '/'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
