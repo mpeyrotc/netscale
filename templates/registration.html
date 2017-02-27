@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+This is the registration page!
+
+{% for error in form.non_field_errors %}
+    <p style="color: red">
+    {{ error }}
+    </p>
+  {% endfor %}
+
+  <form enctype="multipart/form-data" method="post" action="{% url 'registration' %}">
+  <table>
+    {% for field in form.visible_fields %}
+    <tr>
+      <td>{{field.label_tag}}</td>
+      <td>{{field}}</td>
+      <td style="color: red">{{field.errors}}</td>
+    </tr>
+    {% endfor %}
+    </table>
+    {% for field in form.hidden_fields %}
+      {{field}}
+    {% endfor %}
+    {% csrf_token %}
+  <input class='btn btn-warning' type="submit" value="Register" />
+  </form>
+
+</body>
+</html>
