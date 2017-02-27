@@ -5,7 +5,6 @@ __pycache__/
 *.pyc
 
 .idea/
-config.ini
 .DS_Store
 
 # C extensions
