@@ -12,4 +12,11 @@ class UserProfile(models.Model):
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     password = models.CharField(max_length=50)
-    gmail_id = models.CharField(max_length=30, default='0')
+    gmail_account = models.CharField(max_length=50, default='no email')
+    friends = models.ManyToManyField("self", symmetrical=False, blank=True)
+    contacts = models.TextField(null=True)
+
+    @staticmethod
+    def get_user_profile_with_id(id):
+        return UserProfile.objects.filter(user__exact=User.objects.filter(id__exact=id))[0]
+

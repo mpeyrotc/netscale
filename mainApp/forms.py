@@ -19,7 +19,7 @@ class RegistrationForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        exclude = ('user', 'password', 'gmail_id')
+        exclude = ('user', 'password', 'gmail_id', 'friends', 'contacts')
 
     # Customizes form validation for properties that apply to more
     # than one field.  Overrides the forms.Form.clean function.
