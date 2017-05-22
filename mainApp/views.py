@@ -38,7 +38,6 @@ def home(request):
                     context["result"] = profile.first_name + " " + profile.last_name
         else:
             context["result"] = ""
-
     else:
         context["result"] = ""
 
@@ -133,13 +132,19 @@ def profiles(request, id):
                 form = ""
                 context['form'] = form
 
-                context['is_friend'] = True
+                context['is_friend'] = False
                 friends = Friend.objects.friends(request.user)
+
                 for friend in friends:
                     if friend == User.objects.filter(id__exact=id)[0]:
-                        context['is_friend'] = False
+                        context['is_friend'] = True
 
-                return render(request, 'profile.html', context)
+                requests = Friend.objects.requests(User.objects.filter(id__exact=id)[0])
+                for frequest in requests:
+                    if frequest.from_user == request.user:
+                        context['is_friend'] = True
+
+            return render(request, 'profile.html', context)
 
             user = User.objects.filter(id__exact=id)[0]
             profile = UserProfile.objects.select_for_update().get(user__exact=user)

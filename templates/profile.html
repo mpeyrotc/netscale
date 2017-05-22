@@ -8,7 +8,7 @@
 This is the profile page for {{ profile.first_name }} {{ profile.last_name }}.
 
 <p>
-    {% if is_friend %}
+    {% if not is_friend %}
         Send her a <a href="{% url 'send_request' profile.user.id request.user.id %}">friend request</a>.
     {% endif %}
 </p>
