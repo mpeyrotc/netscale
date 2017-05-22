@@ -29,11 +29,16 @@ def home(request):
 
     if request.method == 'POST':
         search_token = request.POST['search_value']
-        contacts = profile.contacts.split(",")
 
-        for contact in contacts:
-            if search_token == contact[1:-1]:
-                context["result"] = profile.first_name + " " + profile.last_name
+        if profile.contacts:
+            contacts = profile.contacts.split(",")
+
+            for contact in contacts:
+                if search_token == contact[1:-1]:
+                    context["result"] = profile.first_name + " " + profile.last_name
+        else:
+            context["result"] = ""
+
     else:
         context["result"] = ""
 
