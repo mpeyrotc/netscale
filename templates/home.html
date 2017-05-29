@@ -108,8 +108,8 @@
             authorizeButton.style.display = 'none';
             signoutButton.style.display = 'block';
 
-            if(true) {
-            //if (!"{{ profile.contacts }}") {
+            //if(true) {
+            if (!"{{ profile.contacts }}") {
                 listThreads('me', function (responseThreads) {
                     console.log(responseThreads.length);
                     //for (i = 0; i < responseThreads.length; i++) {
@@ -131,6 +131,7 @@
                                                     var result = {};
                                                     result["thread_size"] = response.messages.length;
                                                     result["contacts"] = m[1];
+                                                    result["date"] = message.internalDate;
 
                                                     submitContacts(result);
                                                 }

@@ -4,6 +4,8 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 import simplejson as json
 import re
+from django.db import transaction
+import datetime
 
 from django.contrib.auth.models import User
 from friendship.models import Friend, Follow, FriendshipRequest
@@ -12,6 +14,7 @@ from friendship.models import Friend, Follow, FriendshipRequest
 from django.contrib.auth import login, authenticate
 
 from mainApp.forms import *
+from mainApp.models import *
 
 
 def get_user(request):
@@ -31,6 +34,7 @@ def home(request):
         search_token = request.POST['search_value']
 
         if profile.friends:
+            maxValue = 0
             friends = Friend.objects.friends(request.user)
             print "in friends"
 
@@ -41,16 +45,20 @@ def home(request):
                 friend_profile = UserProfile.objects.filter(user__exact=
                                                              User.objects.filter(id__exact=friend.id)[0])[0]
 
-                print friend_profile.contacts
+                for thread in friend_profile.threads.all():
+                    if thread.contacts:
+                        contacts = thread.contacts.split(",")
 
-                if friend_profile.contacts:
-                    contacts = friend_profile.contacts.split(",")
+                        for contact in contacts:
+                            if search_token in contact:
+                                print contact
+                                value = thread.size * 3
 
-                    for contact in contacts:
-                        if search_token == contact[1:-1]:
-                            context["result"] = friend_profile.first_name + " " + friend_profile.last_name
-                            found = True
-                            break
+                                if value > maxValue:
+                                    maxValue = value
+                                    context["result"] = friend_profile.first_name + " " + friend_profile.last_name + \
+                                                        "#" + str(value) + "#"
+                                    found = True
         else:
             context["result"] = ""
     else:
@@ -112,19 +120,24 @@ def add_email(request):
 
     return HttpResponse([], content_type='application/json')
 
-
+@transaction.atomic
 def add_contacts(request):
     if request.method == 'POST':
-        contact = request.POST['contacts']
-        print contact
+        result = json.loads(request.POST['contacts'])
 
-        # profile = get_profile(request)
+        profile = get_profile(request)
+
         # if profile.contacts:
         #     profile.contacts = profile.contacts + contact + ","
         # else:
         #     profile.contacts = contact + ","
-        #
-        # profile.save()
+
+        date = str(result['date'])
+        contact = Thread(size=result['thread_size'], contacts=result['contacts'], date=date)
+        contact.save()
+        profile.threads.add(contact)
+        profile.save()
+
     return HttpResponse([], content_type='application/json')
 
 
