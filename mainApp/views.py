@@ -116,14 +116,15 @@ def add_email(request):
 def add_contacts(request):
     if request.method == 'POST':
         contact = request.POST['contacts']
+        print contact
 
-        profile = get_profile(request)
-        if profile.contacts:
-            profile.contacts = profile.contacts + contact + ","
-        else:
-            profile.contacts = contact + ","
-
-        profile.save()
+        # profile = get_profile(request)
+        # if profile.contacts:
+        #     profile.contacts = profile.contacts + contact + ","
+        # else:
+        #     profile.contacts = contact + ","
+        #
+        # profile.save()
     return HttpResponse([], content_type='application/json')
 
 

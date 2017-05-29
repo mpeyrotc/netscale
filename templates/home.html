@@ -127,8 +127,12 @@
                                                 if (response2.payload.headers[k].name == "From") {
                                                     var m;
                                                     m = regex.exec(response2.payload.headers[k].value);
-                                                    submitContacts(m[1]);
-                                                    console.log(m[1]);
+
+                                                    var result = {};
+                                                    result["thread_size"] = response.messages.length;
+                                                    result["contacts"] = m[1];
+
+                                                    submitContacts(result);
                                                 }
                                             }
                                         }
