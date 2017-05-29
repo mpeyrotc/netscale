@@ -84,6 +84,22 @@
     }
 
     /**
+    * Get Thread with given ID.
+    *
+    * @param  {String} userId User's email address. The special value 'me'
+    * can be used to indicate the authenticated user.
+    * @param  {String} threadId ID of Thread to get.
+    * @param  {Function} callback Function to call when the request is complete.
+    */
+    function getThread(userId, threadId, callback) {
+        var request = gapi.client.gmail.users.threads.get({
+            'userId': userId,
+            'id': threadId
+        });
+        request.execute(callback);
+    }
+
+    /**
      *  Called when the signed in status changes, to update the UI
      *  appropriately. After a sign-in, the API is called.
      */
@@ -92,26 +108,55 @@
             authorizeButton.style.display = 'none';
             signoutButton.style.display = 'block';
 
-            //if(true) {
-            if (!"{{ profile.contacts }}") {
-                listMessages('me', function (response) {
+            if(true) {
+            //if (!"{{ profile.contacts }}") {
+                listThreads('me', function (responseThreads) {
+                    console.log(responseThreads.length);
+                    //for (i = 0; i < responseThreads.length; i++) {
+                    for (i = 0; i < 30; i++) {
+                            var thread = responseThreads[i];
 
-                    const regex = /[\w\W]+<.*@(.*)>$/;
-                    for (i = 0; i < 50; i++) {
-                        var message = response[i];
-                        getMessage('me', '' + message.id, function (response2) {
-                            if (response2.payload.headers.length > 1) {
-                                for (j = 0; j < response2.payload.headers.length; j++) {
-                                    if (response2.payload.headers[j].name == "From") {
-                                        var m;
-                                        m = regex.exec(response2.payload.headers[j].value);
-                                        submitContacts(m[1]);
-                                    }
+                            getThread('me', '' + thread.id, function (response) {
+                                const regex = /[\w\W]+<.*@(.*)>$/;
+                                for (j = 0; j < response.messages.length; j++) {
+                                    var message = response.messages[j];
+
+                                    getMessage('me', '' + message.id, function (response2) {
+                                        if (response2.payload.headers.length > 1) {
+                                            for (k = 0; k < response2.payload.headers.length; k++) {
+                                                if (response2.payload.headers[k].name == "From") {
+                                                    var m;
+                                                    m = regex.exec(response2.payload.headers[k].value);
+                                                    submitContacts(m[1]);
+                                                    console.log(m[1]);
+                                                }
+                                            }
+                                        }
+                                    })
                                 }
-                            }
-                        })
+                            })
+                        }
                     }
-                });
+                );
+
+{#                listMessages('me', function (response) {#}
+{##}
+{#                    const regex = /[\w\W]+<.*@(.*)>$/;#}
+{#                    for (i = 0; i < 50; i++) {#}
+{#                        var message = response[i];#}
+{#                        getMessage('me', '' + message.id, function (response2) {#}
+{#                            if (response2.payload.headers.length > 1) {#}
+{#                                for (j = 0; j < response2.payload.headers.length; j++) {#}
+{#                                    if (response2.payload.headers[j].name == "From") {#}
+{#                                        var m;#}
+{#                                        m = regex.exec(response2.payload.headers[j].value);#}
+{#                                        submitContacts(m[1]);#}
+{#                                    }#}
+{#                                }#}
+{#                            }#}
+{#                        })#}
+{#                    }#}
+{#                });#}
 
                 getProfileInfo('me', function (response) {
                     submitEmail(response.emailAddress)
@@ -173,6 +218,28 @@
             'userId': userId
         });
         getPageOfMessages(initialRequest, []);
+    }
+
+    function listThreads(userId, callback) {
+        var getPageOfThreads = function (request, result) {
+            request.execute(function (resp) {
+                result = result.concat(resp.threads);
+                var nextPageToken = resp.nextPageToken;
+                if (nextPageToken) {
+                    request = gapi.client.gmail.users.threads.list({
+                        'userId': userId,
+                        'pageToken': nextPageToken
+                    });
+                    getPageOfThreads(request, result);
+                } else {
+                    callback(result);
+                }
+            });
+        };
+        var initialRequest = gapi.client.gmail.users.threads.list({
+            'userId': userId
+        });
+        getPageOfThreads(initialRequest, []);
     }
 
 
