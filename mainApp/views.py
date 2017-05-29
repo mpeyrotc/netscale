@@ -30,12 +30,27 @@ def home(request):
     if request.method == 'POST':
         search_token = request.POST['search_value']
 
-        if profile.contacts:
-            contacts = profile.contacts.split(",")
+        if profile.friends:
+            friends = Friend.objects.friends(request.user)
+            print "in friends"
 
-            for contact in contacts:
-                if search_token == contact[1:-1]:
-                    context["result"] = profile.first_name + " " + profile.last_name
+            found = False
+            for friend in friends:
+                if found:
+                    break
+                friend_profile = UserProfile.objects.filter(user__exact=
+                                                             User.objects.filter(id__exact=friend.id)[0])[0]
+
+                print friend_profile.contacts
+
+                if friend_profile.contacts:
+                    contacts = friend_profile.contacts.split(",")
+
+                    for contact in contacts:
+                        if search_token == contact[1:-1]:
+                            context["result"] = friend_profile.first_name + " " + friend_profile.last_name
+                            found = True
+                            break
         else:
             context["result"] = ""
     else:
