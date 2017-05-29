@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 import simplejson as json
 import re
 from django.db import transaction
+import time
 import datetime
 
 from django.contrib.auth.models import User
@@ -29,6 +30,7 @@ def get_profile(request):
 def home(request):
     profile = get_profile(request)
     context = {"profile": profile}
+    now = datetime.datetime.now()
 
     if request.method == 'POST':
         search_token = request.POST['search_value']
@@ -36,12 +38,9 @@ def home(request):
         if profile.friends:
             maxValue = 0
             friends = Friend.objects.friends(request.user)
-            print "in friends"
 
-            found = False
             for friend in friends:
-                if found:
-                    break
+                value = 0
                 friend_profile = UserProfile.objects.filter(user__exact=
                                                              User.objects.filter(id__exact=friend.id)[0])[0]
 
@@ -51,14 +50,26 @@ def home(request):
 
                         for contact in contacts:
                             if search_token in contact:
-                                print contact
-                                value = thread.size * 3
+                                p = re.compile("[0-9]+ [a-zA-Z]{3} ([0-9]+)")
+                                m = p.search(thread.date)
+                                temp = thread.size * 3
 
-                                if value > maxValue:
-                                    maxValue = value
-                                    context["result"] = friend_profile.first_name + " " + friend_profile.last_name + \
-                                                        "#" + str(value) + "#"
-                                    found = True
+                                if m:
+                                    year = int(m.group(1))
+
+                                    if((now.year - year) <= 3):
+                                        value += temp
+                                    elif((now.year - year) <= 5):
+                                        value += temp * 0.87
+                                    elif ((now.year - year) <= 10):
+                                        value += temp * 0.6
+                                    else:
+                                        value += temp * 0.2
+
+                if value > maxValue:
+                    maxValue = value
+                    context["result"] = friend_profile.first_name + " " + friend_profile.last_name + \
+                                        " #" + str(value) + "#"
         else:
             context["result"] = ""
     else:
@@ -132,11 +143,14 @@ def add_contacts(request):
         # else:
         #     profile.contacts = contact + ","
 
-        date = str(result['date'])
-        contact = Thread(size=result['thread_size'], contacts=result['contacts'], date=date)
-        contact.save()
-        profile.threads.add(contact)
-        profile.save()
+        if not profile.threads.filter(thread_id=result["t_id"]).exists():
+            date = result['date']
+
+            contact = Thread(size=result['thread_size'], contacts=result['contacts'], date=date,
+                             thread_id=result['t_id'])
+            contact.save()
+            profile.threads.add(contact)
+            profile.save()
 
     return HttpResponse([], content_type='application/json')
 

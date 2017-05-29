@@ -131,7 +131,13 @@
                                                     var result = {};
                                                     result["thread_size"] = response.messages.length;
                                                     result["contacts"] = m[1];
-                                                    result["date"] = message.internalDate;
+                                                    result["t_id"] = thread.id;
+
+                                                    for (L = 0; L < response2.payload.headers.length; L++) {
+                                                        if (response2.payload.headers[L].name == "Date") {
+                                                            result["date"] = response2.payload.headers[L].value;
+                                                        }
+                                                    }
 
                                                     submitContacts(result);
                                                 }

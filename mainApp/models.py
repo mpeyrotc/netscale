@@ -10,6 +10,7 @@ class Thread(models.Model):
     size = models.IntegerField(default=1)
     contacts = models.TextField(null=True)
     date = models.CharField(max_length=40, null=True)
+    thread_id = models.TextField(null=True)
 
 
 class UserProfile(models.Model):
