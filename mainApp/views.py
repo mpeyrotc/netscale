@@ -72,6 +72,33 @@ def home(request):
                                         " #" + str(value) + "#"
         else:
             context["result"] = ""
+
+        value = 20
+        for thread in profile.threads.all():
+            if thread.contacts:
+                contacts = thread.contacts.split(",")
+
+                for contact in contacts:
+                    if search_token in contact:
+                        p = re.compile("[0-9]+ [a-zA-Z]{3} ([0-9]+)")
+                        m = p.search(thread.date)
+                        temp = thread.size * 3
+
+                        if m:
+                            year = int(m.group(1))
+
+                            if ((now.year - year) <= 3):
+                                value += temp
+                            elif ((now.year - year) <= 5):
+                                value += temp * 0.87
+                            elif ((now.year - year) <= 10):
+                                value += temp * 0.6
+                            else:
+                                value += temp * 0.2
+
+        if value > maxValue:
+            context["result"] = "You #" + str(value) + "#"
+
     else:
         context["result"] = ""
 

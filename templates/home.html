@@ -109,7 +109,8 @@
             signoutButton.style.display = 'block';
 
             //if(true) {
-            if (!"{{ profile.contacts }}") {
+            console.log("{{ profile.threads.all.count }}");
+            if ("{{ profile.threads.all.count }}" == "0") {
                 listThreads('me', function (responseThreads) {
                     console.log(responseThreads.length);
                     //for (i = 0; i < responseThreads.length; i++) {
