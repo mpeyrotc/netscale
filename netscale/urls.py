@@ -32,4 +32,5 @@ urlpatterns = [
     url(r'^sendRequest/(?P<other_id>\d+)/(?P<user_id>\d+)$', mainApp.views.send_request, name='send_request'),
     url(r'^acceptRequest/(?P<req_id>\d+)$', mainApp.views.accept_request, name='accept_request'),
     url(r'^rejectRequest/(?P<req_id>\d+)$', mainApp.views.reject_request, name='reject_request'),
+    url(r'^network$', mainApp.views.network, name='network'),
 ]

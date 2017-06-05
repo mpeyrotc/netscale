@@ -7,6 +7,7 @@ import re
 from django.db import transaction
 import time
 import datetime
+import operator
 
 from django.contrib.auth.models import User
 from friendship.models import Friend, Follow, FriendshipRequest
@@ -285,3 +286,46 @@ def reject_request(request, req_id):
     friend_request.reject()
 
     return redirect(reverse('home'))
+
+
+@login_required
+def network(request):
+    context = {}
+    result = {}
+    profile = get_profile(request)
+
+    if profile.friends:
+        print 'entered here'
+        friends = Friend.objects.friends(request.user)
+
+        for friend in friends:
+            friend_profile = UserProfile.objects.filter(user__exact=
+                                                        User.objects.filter(id__exact=friend.id)[0])[0]
+
+            print friends
+            for thread in friend_profile.threads.all():
+                if thread.contacts:
+                    contacts = thread.contacts.split(",")
+
+                    for contact in contacts:
+                        if contact in result:
+                            result[contact] += 1
+                        else:
+                            result[contact] = 1
+
+    for thread in profile.threads.all():
+        if thread.contacts:
+            contacts = thread.contacts.split(",")
+
+            for contact in contacts:
+                if contact in result:
+                    result[contact] += 1
+                else:
+                    result[contact] = 1
+
+    sorted_result = sorted(result.items(), key=operator.itemgetter(1))
+    context['result'] = reversed(sorted_result)
+
+    return render(request, 'network.html', context)
+
+
