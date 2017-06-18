@@ -32,12 +32,14 @@ def home(request):
     profile = get_profile(request)
     context = {"profile": profile}
     now = datetime.datetime.now()
+    search_results = []
+
+    print profile.gmail_account
 
     if request.method == 'POST':
         search_token = request.POST['search_value']
 
         if profile.friends:
-            maxValue = 0
             friends = Friend.objects.friends(request.user)
 
             for friend in friends:
@@ -67,10 +69,7 @@ def home(request):
                                     else:
                                         value += temp * 0.2
 
-                if value > maxValue:
-                    maxValue = value
-                    context["result"] = friend_profile.first_name + " " + friend_profile.last_name + \
-                                        " #" + str(value) + "#"
+                search_results.append((friend_profile, value))
         else:
             context["result"] = ""
 
@@ -97,9 +96,14 @@ def home(request):
                             else:
                                 value += temp * 0.2
 
-        if value > maxValue:
-            context["result"] = "You #" + str(value) + "#"
+        search_results.append((profile, value))
+        search_results.sort(key=lambda tup: tup[1])
+        search_results.reverse()
 
+        if len(search_results) > 5:
+            search_results = search_results[0:4]
+
+        context["result"] = search_results
     else:
         context["result"] = ""
 
@@ -171,7 +175,7 @@ def add_contacts(request):
         # else:
         #     profile.contacts = contact + ","
 
-        if not profile.threads.filter(thread_id=result["t_id"]).exists():
+        if not profile.threads.filter(thread_id=result["t_id"]).exists() and int(result['thread_size']) > 1:
             date = result['date']
 
             contact = Thread(size=result['thread_size'], contacts=result['contacts'], date=date,
@@ -179,6 +183,11 @@ def add_contacts(request):
             contact.save()
             profile.threads.add(contact)
             profile.save()
+
+        if int(result['thread_size']) > 2:
+            print "worked " + str(int(result['thread_size']))
+        else:
+            print "not worked " + str(result['thread_size'])
 
     return HttpResponse([], content_type='application/json')
 
@@ -285,6 +294,8 @@ def reject_request(request, req_id):
     friend_request = FriendshipRequest.objects.get(pk=req_id)
     friend_request.reject()
 
+
+
     return redirect(reverse('home'))
 
 
@@ -295,7 +306,6 @@ def network(request):
     profile = get_profile(request)
 
     if profile.friends:
-        print 'entered here'
         friends = Friend.objects.friends(request.user)
 
         for friend in friends:

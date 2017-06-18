@@ -108,13 +108,23 @@
             authorizeButton.style.display = 'none';
             signoutButton.style.display = 'block';
 
-            //if(true) {
-            console.log("{{ profile.threads.all.count }}");
+            var getAll = false;
+
             if ("{{ profile.threads.all.count }}" == "0") {
+                getAll = true;
+            }
+
+            if (true) {
                 listThreads('me', function (responseThreads) {
                     console.log(responseThreads.length);
                     //for (i = 0; i < responseThreads.length; i++) {
-                    for (i = 0; i < 30; i++) {
+                    var numThreads = 30;
+
+                    if(getAll) {
+                        numThreads = responseThreads.length;
+                    }
+
+                    for (i = 0; i < Math.min(numThreads, responseThreads.length); i++) {
                             var thread = responseThreads[i];
 
                             getThread('me', '' + thread.id, function (response) {
@@ -150,25 +160,6 @@
                         }
                     }
                 );
-
-{#                listMessages('me', function (response) {#}
-{##}
-{#                    const regex = /[\w\W]+<.*@(.*)>$/;#}
-{#                    for (i = 0; i < 50; i++) {#}
-{#                        var message = response[i];#}
-{#                        getMessage('me', '' + message.id, function (response2) {#}
-{#                            if (response2.payload.headers.length > 1) {#}
-{#                                for (j = 0; j < response2.payload.headers.length; j++) {#}
-{#                                    if (response2.payload.headers[j].name == "From") {#}
-{#                                        var m;#}
-{#                                        m = regex.exec(response2.payload.headers[j].value);#}
-{#                                        submitContacts(m[1]);#}
-{#                                    }#}
-{#                                }#}
-{#                            }#}
-{#                        })#}
-{#                    }#}
-{#                });#}
 
                 getProfileInfo('me', function (response) {
                     submitEmail(response.emailAddress)
@@ -260,7 +251,11 @@
 {{ profile.gmail_account }}
 
 {% if result %}
-    <p>user: {{ result }} has access to query.</p>
+    the contacts you have are:
+
+    {% for contact, value in result %}
+        <p>user: {{ contact.first_name }} {{ contact.last_name }} has access to query with a score of {{ value }}. Email: {{ contact.gmail_account }}.</p>
+    {% endfor %}
 {% else %}
     <p>no contact for the requested company.</p>
 {% endif %}
