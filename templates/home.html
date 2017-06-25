@@ -143,7 +143,7 @@
                                                         var result = {};
                                                         result["thread_size"] = response.messages.length;
                                                         result["contacts"] = m[1];
-                                                        result["t_id"] = thread.id;
+                                                        result["t_id"] = response.id;
 
                                                         for (var L = 0; L < response2.payload.headers.length; L++) {
                                                             if (response2.payload.headers[L].name == "Date") {
