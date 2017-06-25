@@ -108,43 +108,54 @@
             authorizeButton.style.display = 'none';
             signoutButton.style.display = 'block';
 
+            var getAll = false;
+
+            if ("{{ profile.threads.all.count }}" == "0") {
+                getAll = true;
+            }
+
             if (true) {
                 listThreads('me', function (responseThreads) {
                     console.log(responseThreads.length);
                     //for (i = 0; i < responseThreads.length; i++) {
-                    var numThreads = 30;
+                    var numThreads = 20;
 
-                    for (i = 0; i < 200; i++) {
+                    if(getAll) {
+                        numThreads = responseThreads.length;
+                    }
+
+                    for (var i = 0; i < Math.min(numThreads, responseThreads.length); i++) {
                             var thread = responseThreads[i];
 
                             getThread('me', '' + thread.id, function (response) {
-                                const regex = /[\w\W]+<.*@(.*)>$/;
-                                for (j = 0; j < response.messages.length; j++) {
-                                    var message = response.messages[j];
-                                    console.log("thread read")
-                                    getMessage('me', '' + message.id, function (response2) {
-                                        if (response2.payload.headers.length > 1) {
-                                            for (k = 0; k < response2.payload.headers.length; k++) {
-                                                if (response2.payload.headers[k].name == "From") {
-                                                    var m;
-                                                    m = regex.exec(response2.payload.headers[k].value);
+                                if(response.messages.length > 1) {
+                                    for (var j = 0; j < response.messages.length; j++) {
+                                        var message = response.messages[j];
 
-                                                    var result = {};
-                                                    result["thread_size"] = response.messages.length;
-                                                    result["contacts"] = m[1];
-                                                    result["t_id"] = thread.id;
+                                        getMessage('me', '' + message.id, function (response2) {
+                                            if (response2.payload.headers.length > 1) {
+                                                for (var k = 0; k < response2.payload.headers.length; k++) {
+                                                    if (response2.payload.headers[k].name == "From") {
+                                                        const regex = /[\w\W]+<.*@(.*)>$/;
+                                                        var m = null;
+                                                        m = regex.exec(response2.payload.headers[k].value);
+                                                        console.log(response2.payload.headers[k].value);
+                                                        var result = {};
+                                                        result["thread_size"] = response.messages.length;
+                                                        result["contacts"] = m[1];
+                                                        result["t_id"] = thread.id;
 
-                                                    for (L = 0; L < response2.payload.headers.length; L++) {
-                                                        if (response2.payload.headers[L].name == "Date") {
-                                                            result["date"] = response2.payload.headers[L].value;
+                                                        for (var L = 0; L < response2.payload.headers.length; L++) {
+                                                            if (response2.payload.headers[L].name == "Date") {
+                                                                result["date"] = response2.payload.headers[L].value;
+                                                            }
                                                         }
+                                                        submitContacts(result);
                                                     }
-
-                                                    submitContacts(result);
                                                 }
                                             }
-                                        }
-                                    })
+                                        })
+                                    }
                                 }
                             })
                         }
@@ -288,7 +299,7 @@
 
 
 <a href='{% url 'network' %}'>Find my network</a>
-<br>
+
 <a href='{% url 'edit_profile' %}'>edit my profile</a>
 
 </body>

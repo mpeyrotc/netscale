@@ -29,13 +29,14 @@ function submitEmail(email_address) {
 }
 
 function submitContacts(contacts) {
+    console.log(JSON.stringify(contacts));
     $(document).ready(function () {
         $.ajax({
             type: "POST",
             url: "add-contacts",
             data: {
                 'csrfmiddlewaretoken': getCookie('csrftoken'),
-                'contacts': JSON.stringify(contacts)},
+                'results': JSON.stringify(contacts)},
             dataType: "json",
             cache: false
         });

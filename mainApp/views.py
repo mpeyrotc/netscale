@@ -167,7 +167,8 @@ def add_email(request):
 @transaction.atomic
 def add_contacts(request):
     if request.method == 'POST':
-        result = json.loads(request.POST['contacts'])
+        result = json.loads(request.POST['results'])
+        print result
 
         profile = get_profile(request)
 
@@ -176,19 +177,21 @@ def add_contacts(request):
         # else:
         #     profile.contacts = contact + ","
 
-        if not profile.threads.filter(thread_id=result["t_id"]).exists() and int(result['thread_size']) > 1:
+        if int(result['thread_size']) > 1:
             date = result['date']
 
-            contact = Thread(size=result['thread_size'], contacts=result['contacts'], date=date,
-                             thread_id=result['t_id'])
-            contact.save()
-            profile.threads.add(contact)
-            profile.save()
+            if not profile.threads.filter(thread_id=result["t_id"]).exists():
+                contact = Thread(size=result['thread_size'], contacts=result['contacts'], date=date, thread_id=result['t_id'])
+                contact.save()
+                profile.threads.add(contact)
+                profile.save()
+            else:
+                contact = Thread.objects.filter(thread_id=result["t_id"])[0]
+                if int(result['thread_size']) > len(contact.contacts):
+                    contact.contacts += "," + result['contacts']
+                    contact.save()
 
-        if int(result['thread_size']) > 2:
             print "worked " + str(int(result['thread_size']))
-        else:
-            print "not worked " + str(result['thread_size'])
 
     return HttpResponse([], content_type='application/json')
 
@@ -352,7 +355,7 @@ def edit_profile(request):
             form = ProfileForm(instance=profile)
             context['form'] = form
 
-            context['contacts'] = profile.contacts
+            context['threads'] = profile.threads.all()
 
             return render(request, 'edit-profile.html', context)
 

@@ -27,9 +27,9 @@
     <input class='btn btn-warning' type="submit" value="Change"/>
 </form>
 
-
-{% for contact in contacts %}
-    <p>contact</p>
+{% for thread in threads %}
+    <p>{{ thread.contacts}}</p>
 {%  endfor %}
+
 </body>
 </html>
