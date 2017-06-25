@@ -23,6 +23,8 @@ class UserProfile(models.Model):
     friends = models.ManyToManyField("self", symmetrical=False, blank=True)
     contacts = models.TextField(null=True)
     threads = models.ManyToManyField(Thread, symmetrical=False, blank=True)
+    bio = models.CharField(max_length=200, blank=True, default='')
+    picture = models.CharField(blank=True, max_length=256)
 
     @staticmethod
     def get_user_profile_with_id(id):

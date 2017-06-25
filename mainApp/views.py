@@ -11,6 +11,7 @@ import operator
 
 from django.contrib.auth.models import User
 from friendship.models import Friend, Follow, FriendshipRequest
+from s3 import s3_upload, s3_delete
 
 # Used to create and manually log in a user
 from django.contrib.auth import login, authenticate
@@ -339,3 +340,67 @@ def network(request):
     return render(request, 'network.html', context)
 
 
+@login_required
+@transaction.atomic
+def edit_profile(request):
+    context = {}
+    profile = get_profile(request)
+
+    # Get user's profile form
+    try:
+        if request.method == 'GET':
+            form = ProfileForm(instance=profile)
+            context['form'] = form
+            return render(request, 'edit-profile.html', context)
+
+        db_update_time = profile.update_time  # Copy timestamp to check after form is bound
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if not form.is_valid():
+            context['profile'] = profile
+            context['form'] = form
+            return render(request, 'edit-profile.html', context)
+
+        # if update times do not match, someone else updated DB record while were editing
+        if db_update_time != form.cleaned_data['update_time']:
+            # refetch from DB and try again.
+            profile = UserProfile.objects.get(user=User.objects.filter(id__exact=id)[0])
+            form = ProfileForm(instance=profile)
+            context['message'] = 'Another user has modified this record.  Re-enter your changes.'
+            context['form'] = form
+            context['profile'] = profile
+
+            return render(request, 'edit-profile.html', context)
+
+        # Set update info to current time and user, and save it!
+        profile.update_time = datetime.datetime.now()
+
+        if form.cleaned_data['picture']:
+            url = s3_upload(form.cleaned_data['picture'], profile.id)
+            form.picture = url
+
+        form.save()
+
+        # form = EditForm(instance=entry)
+        context['message'] = 'Entry updated.'
+        context['entry'] = profile
+        context['form'] = form
+
+        return render(request, 'profile.html', context)
+
+    except UserProfile.DoesNotExist:
+        return redirect(reverse('home'))
+
+    return render(request, 'edit-profile.html', context)
+
+
+@login_required
+def get_picture(request, id):
+    if User.objects.filter(id__exact=id):
+        profile = UserProfile.objects.filter(user__exact=User.objects.filter(id__exact=id))[0]
+        if not profile.picture:
+            raise Http404
+
+        content_type = guess_type(profile.picture.name)
+        return HttpResponse(profile.picture, content_type=content_type)
+    else:
+        return redirect(reverse('home'))
