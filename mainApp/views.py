@@ -351,6 +351,9 @@ def edit_profile(request):
         if request.method == 'GET':
             form = ProfileForm(instance=profile)
             context['form'] = form
+
+            context['contacts'] = profile.contacts
+
             return render(request, 'edit-profile.html', context)
 
         db_update_time = profile.update_time  # Copy timestamp to check after form is bound

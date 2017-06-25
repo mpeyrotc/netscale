@@ -93,7 +93,7 @@ class ProfileForm(forms.ModelForm):
         model = UserProfile
         exclude = ('user', 'password', 'gmail_id', 'friends', 'contacts', 'threads', 'username')
         widgets = {
-            'bio': forms.Textarea(attrs={'cols': 40 , 'rows': 4})
+            'bio': forms.Textarea(attrs={'cols': 40, 'rows': 4})
         }
 
     picture = forms.FileField(required=False)

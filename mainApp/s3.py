@@ -14,6 +14,7 @@ AWS_ACCESS_KEY = 'key'
 AWS_SECRET_ACCESS_KEY = 'secret'
 S3_BUCKET = 'bucket'
 
+
 def s3_upload(uploaded_file, id):
     s3conn = boto.connect_s3(AWS_ACCESS_KEY,AWS_SECRET_ACCESS_KEY)
     bucket = s3conn.get_bucket(S3_BUCKET)
@@ -22,7 +23,7 @@ def s3_upload(uploaded_file, id):
     k.key = 'id-' + str(id)
     k.content_type = uploaded_file.content_type
 
-    if hasattr(uploaded_file,'temporary_file_path'):
+    if hasattr(uploaded_file, 'temporary_file_path'):
         k.set_contents_from_filename(uploaded_file.temporary_file_path())
     else:
         k.set_contents_from_string(uploaded_file.read())
@@ -31,8 +32,9 @@ def s3_upload(uploaded_file, id):
 
     return k.generate_url(expires_in=0, query_auth=False)
 
+
 def s3_delete(id):
-    s3conn = boto.connect_s3(AWS_ACCESS_KEY,AWS_SECRET_ACCESS_KEY)
+    s3conn = boto.connect_s3(AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY)
     bucket = s3conn.get_bucket(S3_BUCKET)
 
     k = Key(bucket)

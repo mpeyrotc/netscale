@@ -108,23 +108,13 @@
             authorizeButton.style.display = 'none';
             signoutButton.style.display = 'block';
 
-            var getAll = false;
-
-            if ("{{ profile.threads.all.count }}" == "0") {
-                getAll = true;
-            }
-
             if (true) {
                 listThreads('me', function (responseThreads) {
                     console.log(responseThreads.length);
                     //for (i = 0; i < responseThreads.length; i++) {
                     var numThreads = 30;
 
-                    if(getAll) {
-                        numThreads = responseThreads.length;
-                    }
-
-                    for (i = 0; i < Math.min(numThreads, responseThreads.length); i++) {
+                    for (i = 0; i < 200; i++) {
                             var thread = responseThreads[i];
 
                             getThread('me', '' + thread.id, function (response) {
