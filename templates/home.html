@@ -1,145 +1,122 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>NetScale</title>
-    <meta charset='utf-8'/>
-    {% load static %}
-    {% load friendshiptags %}
-</head>
+    <meta charset='utf-8' /> {% load static %} {% load friendshiptags %} </head>
+
 <body>
-<!-- <input type="hidden" id="profile_contacts" name="profile_contacts" value="{{ profile.contacts }}"> -->
-
-<!--Add buttons to initiate auth sequence and sign out-->
-<button id="authorize-button" style="display: none;">Authorize</button>
-<button id="signout-button" style="display: none;">Sign Out</button>
-<a href="{% url 'logout' %}">
-    <button style='float: right' class="btn btn-warning">Logout</button>
-</a>
-
-<form id="searchbox" method="post" action="{% url 'home' %}">
-    <input name='search_value' type="text" placeholder="Type here">
-    <input id="submit" type="submit" value="Search">
-    {% csrf_token %}
-</form>
-
-<pre id="content"></pre>
-
-<script type="text/javascript">
-    // Client ID and API key from the Developer Console
-    var CLIENT_ID = '491578392154-lpr6unil0tllqk76bjmbmtrh0fikeufi.apps.googleusercontent.com';
-
-    // Array of API discovery doc URLs for APIs used by the quickstart
-    var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"];
-
-    // Authorization scopes required by the API; multiple scopes can be
-    // included, separated by spaces.
-    var SCOPES = 'https://www.googleapis.com/auth/gmail.readonly';
-
-    var authorizeButton = document.getElementById('authorize-button');
-    var signoutButton = document.getElementById('signout-button');
-    var user_profile
-
-    /**
-     *  On load, called to load the auth2 library and API client library.
-     */
-    function handleClientLoad(profile) {
-        user_profile = profile
-        gapi.load('client:auth2', initClient);
-    }
-
-    /**
-     *  Initializes the API client library and sets up sign-in state
-     *  listeners.
-     */
-    function initClient() {
-        gapi.client.init({
-            discoveryDocs: DISCOVERY_DOCS,
-            clientId: CLIENT_ID,
-            scope: SCOPES
-        }).then(function () {
-            // Listen for sign-in state changes.
-            gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-
-            // Handle the initial sign-in state.
-            updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-            authorizeButton.onclick = handleAuthClick;
-            signoutButton.onclick = handleSignoutClick;
-        });
-    }
-
-    /**
-     * Get Message with given ID.
-     *
-     * @param  {String} userId User's email address. The special value 'me'
-     * can be used to indicate the authenticated user.
-     * @param  {String} messageId ID of Message to get.
-     * @param  {Function} callback Function to call when the request is complete.
-     */
-    function getMessage(userId, messageId, callback) {
-        var request = gapi.client.gmail.users.messages.get({
-            'userId': userId,
-            'id': messageId
-        });
-        request.execute(callback);
-    }
-
-    /**
-    * Get Thread with given ID.
-    *
-    * @param  {String} userId User's email address. The special value 'me'
-    * can be used to indicate the authenticated user.
-    * @param  {String} threadId ID of Thread to get.
-    * @param  {Function} callback Function to call when the request is complete.
-    */
-    function getThread(userId, threadId, callback) {
-        var request = gapi.client.gmail.users.threads.get({
-            'userId': userId,
-            'id': threadId
-        });
-        request.execute(callback);
-    }
-
-    /**
-     *  Called when the signed in status changes, to update the UI
-     *  appropriately. After a sign-in, the API is called.
-     */
-    function updateSigninStatus(isSignedIn) {
-        if (isSignedIn) {
-            authorizeButton.style.display = 'none';
-            signoutButton.style.display = 'block';
-
-            //if(true) {
-            console.log("{{ profile.threads.all.count }}");
-            if ("{{ profile.threads.all.count }}" == "0") {
-                listThreads('me', function (responseThreads) {
-                    console.log(responseThreads.length);
-                    //for (i = 0; i < responseThreads.length; i++) {
-                    for (i = 0; i < 30; i++) {
+    <!-- <input type="hidden" id="profile_contacts" name="profile_contacts" value="{{ profile.contacts }}"> -->
+    <!--Add buttons to initiate auth sequence and sign out-->
+    <button id="authorize-button" style="display: none;">Authorize</button>
+    <button id="signout-button" style="display: none;">Sign Out</button>
+    <a href="{% url 'logout' %}">
+        <button style='float: right' class="btn btn-warning">Logout</button>
+    </a>
+    <form id="searchbox" method="post" action="{% url 'home' %}">
+        <input name='search_value' type="text" placeholder="Type here">
+        <input id="submit" type="submit" value="Search"> {% csrf_token %} </form> <pre id="content"></pre>
+    <script type="text/javascript">
+        // Client ID and API key from the Developer Console
+        var CLIENT_ID = '491578392154-lpr6unil0tllqk76bjmbmtrh0fikeufi.apps.googleusercontent.com';
+        // Array of API discovery doc URLs for APIs used by the quickstart
+        var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"];
+        // Authorization scopes required by the API; multiple scopes can be
+        // included, separated by spaces.
+        var SCOPES = 'https://www.googleapis.com/auth/gmail.readonly';
+        var authorizeButton = document.getElementById('authorize-button');
+        var signoutButton = document.getElementById('signout-button');
+        var user_profile
+            /**
+             *  On load, called to load the auth2 library and API client library.
+             */
+        function handleClientLoad(profile) {
+            user_profile = profile
+            gapi.load('client:auth2', initClient);
+        }
+        /**
+         *  Initializes the API client library and sets up sign-in state
+         *  listeners.
+         */
+        function initClient() {
+            gapi.client.init({
+                discoveryDocs: DISCOVERY_DOCS
+                , clientId: CLIENT_ID
+                , scope: SCOPES
+            }).then(function () {
+                // Listen for sign-in state changes.
+                gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+                // Handle the initial sign-in state.
+                updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+                authorizeButton.onclick = handleAuthClick;
+                signoutButton.onclick = handleSignoutClick;
+            });
+        }
+        /**
+         * Get Message with given ID.
+         *
+         * @param  {String} userId User's email address. The special value 'me'
+         * can be used to indicate the authenticated user.
+         * @param  {String} messageId ID of Message to get.
+         * @param  {Function} callback Function to call when the request is complete.
+         */
+        function getMessage(userId, messageId, callback) {
+            var request = gapi.client.gmail.users.messages.get({
+                'userId': userId
+                , 'id': messageId
+            });
+            request.execute(callback);
+        }
+        /**
+         * Get Thread with given ID.
+         *
+         * @param  {String} userId User's email address. The special value 'me'
+         * can be used to indicate the authenticated user.
+         * @param  {String} threadId ID of Thread to get.
+         * @param  {Function} callback Function to call when the request is complete.
+         */
+        function getThread(userId, threadId, callback) {
+            var request = gapi.client.gmail.users.threads.get({
+                'userId': userId
+                , 'id': threadId
+            });
+            request.execute(callback);
+        }
+        /**
+         *  Called when the signed in status changes, to update the UI
+         *  appropriately. After a sign-in, the API is called.
+         */
+        function updateSigninStatus(isSignedIn) {
+            if (isSignedIn) {
+                authorizeButton.style.display = 'none';
+                signoutButton.style.display = 'block';
+                //if(true) {
+                console.log("{{ profile.threads.all.count }}");
+                if ("{{ profile.threads.all.count }}" == "0") {
+                    listThreads('me', function (responseThreads) {
+                        console.log(responseThreads.length);
+                        //for (i = 0; i < responseThreads.length; i++) {
+                        for (i = 0; i < 30; i++) {
                             var thread = responseThreads[i];
-
                             getThread('me', '' + thread.id, function (response) {
                                 const regex = /[\w\W]+<.*@(.*)>$/;
                                 for (j = 0; j < response.messages.length; j++) {
                                     var message = response.messages[j];
-
                                     getMessage('me', '' + message.id, function (response2) {
                                         if (response2.payload.headers.length > 1) {
                                             for (k = 0; k < response2.payload.headers.length; k++) {
                                                 if (response2.payload.headers[k].name == "From") {
                                                     var m;
                                                     m = regex.exec(response2.payload.headers[k].value);
-
                                                     var result = {};
                                                     result["thread_size"] = response.messages.length;
                                                     result["contacts"] = m[1];
                                                     result["t_id"] = thread.id;
-
                                                     for (L = 0; L < response2.payload.headers.length; L++) {
                                                         if (response2.payload.headers[L].name == "Date") {
                                                             result["date"] = response2.payload.headers[L].value;
                                                         }
                                                     }
-
                                                     submitContacts(result);
                                                 }
                                             }
@@ -148,161 +125,129 @@
                                 }
                             })
                         }
+                    }); {#
+                        listMessages('me', function (response) {#} {##} {#
+                            const regex = /[\w\W]+<.*@(.*)>$/;#
+                        } {#
+                            for (i = 0; i < 50; i++) {#} {#
+                                var message = response[i];#
+                            } {#
+                                getMessage('me', '' + message.id, function (response2) {#} {#
+                                    if (response2.payload.headers.length > 1) {#} {#
+                                        for (j = 0; j < response2.payload.headers.length; j++) {#} {#
+                                            if (response2.payload.headers[j].name == "From") {#} {#
+                                                var m;#
+                                            } {#
+                                                m = regex.exec(response2.payload.headers[j].value);#
+                                            } {#
+                                                submitContacts(m[1]);#
+                                            } {#}#
+                                        } {#}#
+                                    } {#}#
+                                } {#})#
+                            } {#}#
+                        } {#});#
                     }
-                );
-
-{#                listMessages('me', function (response) {#}
-{##}
-{#                    const regex = /[\w\W]+<.*@(.*)>$/;#}
-{#                    for (i = 0; i < 50; i++) {#}
-{#                        var message = response[i];#}
-{#                        getMessage('me', '' + message.id, function (response2) {#}
-{#                            if (response2.payload.headers.length > 1) {#}
-{#                                for (j = 0; j < response2.payload.headers.length; j++) {#}
-{#                                    if (response2.payload.headers[j].name == "From") {#}
-{#                                        var m;#}
-{#                                        m = regex.exec(response2.payload.headers[j].value);#}
-{#                                        submitContacts(m[1]);#}
-{#                                    }#}
-{#                                }#}
-{#                            }#}
-{#                        })#}
-{#                    }#}
-{#                });#}
-
-                getProfileInfo('me', function (response) {
-                    submitEmail(response.emailAddress)
-                });
+                    getProfileInfo('me', function (response) {
+                        submitEmail(response.emailAddress)
+                    });
+                }
             }
-        } else {
-            authorizeButton.style.display = 'block';
-            signoutButton.style.display = 'none';
+            else {
+                authorizeButton.style.display = 'block';
+                signoutButton.style.display = 'none';
+            }
         }
-    }
 
-
-    function getProfileInfo(userId, callback) {
-        var request = gapi.client.gmail.users.getProfile({
-            'userId': userId,
-        });
-        request.execute(callback);
-    }
-
-    /**
-     *  Sign in the user upon button click.
-     */
-    function handleAuthClick(event) {
-        gapi.auth2.getAuthInstance().signIn();
-    }
-
-    /**
-     *  Sign out the user upon button click.
-     */
-    function handleSignoutClick(event) {
-        gapi.auth2.getAuthInstance().signOut();
-    }
-
-    /**
-     * Retrieve Messages in user's mailbox matching query.
-     *
-     * @param  {String} userId User's email address. The special value 'me'
-     * can be used to indicate the authenticated user.
-     * @param  {String} query String used to filter the Messages listed.
-     * @param  {Function} callback Function to call when the request is complete.
-     */
-    function listMessages(userId, callback) {
-        var getPageOfMessages = function (request, result) {
-            request.execute(function (resp) {
-                result = result.concat(resp.messages);
-                var nextPageToken = resp.nextPageToken;
-                if (nextPageToken) {
-                    request = gapi.client.gmail.users.messages.list({
-                        'userId': userId,
-                        'pageToken': nextPageToken
-                    });
-                    getPageOfMessages(request, result);
-                } else {
-                    callback(result);
-                }
+        function getProfileInfo(userId, callback) {
+            var request = gapi.client.gmail.users.getProfile({
+                'userId': userId
+            , });
+            request.execute(callback);
+        }
+        /**
+         *  Sign in the user upon button click.
+         */
+        function handleAuthClick(event) {
+            gapi.auth2.getAuthInstance().signIn();
+        }
+        /**
+         *  Sign out the user upon button click.
+         */
+        function handleSignoutClick(event) {
+            gapi.auth2.getAuthInstance().signOut();
+        }
+        /**
+         * Retrieve Messages in user's mailbox matching query.
+         *
+         * @param  {String} userId User's email address. The special value 'me'
+         * can be used to indicate the authenticated user.
+         * @param  {String} query String used to filter the Messages listed.
+         * @param  {Function} callback Function to call when the request is complete.
+         */
+        function listMessages(userId, callback) {
+            var getPageOfMessages = function (request, result) {
+                request.execute(function (resp) {
+                    result = result.concat(resp.messages);
+                    var nextPageToken = resp.nextPageToken;
+                    if (nextPageToken) {
+                        request = gapi.client.gmail.users.messages.list({
+                            'userId': userId
+                            , 'pageToken': nextPageToken
+                        });
+                        getPageOfMessages(request, result);
+                    }
+                    else {
+                        callback(result);
+                    }
+                });
+            };
+            var initialRequest = gapi.client.gmail.users.messages.list({
+                'userId': userId
             });
-        };
-        var initialRequest = gapi.client.gmail.users.messages.list({
-            'userId': userId
-        });
-        getPageOfMessages(initialRequest, []);
-    }
+            getPageOfMessages(initialRequest, []);
+        }
 
-    function listThreads(userId, callback) {
-        var getPageOfThreads = function (request, result) {
-            request.execute(function (resp) {
-                result = result.concat(resp.threads);
-                var nextPageToken = resp.nextPageToken;
-                if (nextPageToken) {
-                    request = gapi.client.gmail.users.threads.list({
-                        'userId': userId,
-                        'pageToken': nextPageToken
-                    });
-                    getPageOfThreads(request, result);
-                } else {
-                    callback(result);
-                }
+        function listThreads(userId, callback) {
+            var getPageOfThreads = function (request, result) {
+                request.execute(function (resp) {
+                    result = result.concat(resp.threads);
+                    var nextPageToken = resp.nextPageToken;
+                    if (nextPageToken) {
+                        request = gapi.client.gmail.users.threads.list({
+                            'userId': userId
+                            , 'pageToken': nextPageToken
+                        });
+                        getPageOfThreads(request, result);
+                    }
+                    else {
+                        callback(result);
+                    }
+                });
+            };
+            var initialRequest = gapi.client.gmail.users.threads.list({
+                'userId': userId
             });
-        };
-        var initialRequest = gapi.client.gmail.users.threads.list({
-            'userId': userId
-        });
-        getPageOfThreads(initialRequest, []);
-    }
-
-
-</script>
-
-{{ profile.gmail_account }}
-
-{% if result %}
-    <p>user: {{ result }} has access to query.</p>
-{% else %}
-    <p>no contact for the requested company.</p>
-{% endif %}
-
-<p>All users:</p>
-{% for profile in user_profiles %}
-    {% if user_id != profile.user.id %}
+            getPageOfThreads(initialRequest, []);
+        }
+    </script> {{ profile.gmail_account }} {% if result %}
+    <p>user: {{ result }} has access to query.</p> {% else %}
+    <p>no contact for the requested company.</p> {% endif %}
+    <p>All users:</p> {% for profile in user_profiles %} {% if user_id != profile.user.id %}
     <hr>
-    <div class='post_data'>
-        <a href='{% url 'profiles' profile.user.id %}'>{{ profile.user.username }}</a>
-        ({{ profile.first_name }} {{ profile.last_name }})</p>
-    </div>
-    {% endif %}
-{% endfor %}
-
-<hr>
-<p>All friends:</p>
-{% friends request.user %}
-
-<p>Friend Requests:</p>
-{% for data in requests %}
+    <div class='post_data'> <a href='{% url ' profiles ' profile.user.id %}'>{{ profile.user.username }}</a> ({{ profile.first_name }} {{ profile.last_name }})</p>
+    </div> {% endif %} {% endfor %}
     <hr>
-    <div class='post_data'>
-        <a href='{% url 'profiles' data.profile.user.id %}'>{{ data.profile.user.username }}</a>
-        ({{ data.profile.first_name }} {{ data.profile.last_name }}) send you a friend request.
-        <a href='{% url 'accept_request' data.request%}'>accept?</a> or <a href='{% url 'reject_request' data.request%}'>reject?</a></p>
-    </div>
-{% endfor %}
+    <p>All friends:</p> {% friends request.user %}
+    <p>Friend Requests:</p> {% for data in requests %}
+    <hr>
+    <div class='post_data'> <a href='{% url ' profiles ' data.profile.user.id %}'>{{ data.profile.user.username }}</a> ({{ data.profile.first_name }} {{ data.profile.last_name }}) send you a friend request. <a href='{% url ' accept_request ' data.request%}'>accept?</a> or <a href='{% url ' reject_request ' data.request%}'>reject?</a></p>
+    </div> {% endfor %}
+    <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad('{{ profile.gmail_account }}')" onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{% static 'js/netscale.js' %}"></script>
+    <p id="status"></p> <a href='{% url ' network ' %}'>Find my network</a> </body>
 
-<script async defer src="https://apis.google.com/js/api.js"
-        onload="this.onload=function(){};handleClientLoad('{{ profile.gmail_account }}')"
-        onreadystatechange="if (this.readyState === 'complete') this.onload()">
-</script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="{% static 'js/netscale.js' %}"></script>
-
-<p id="status"></p>
-
-
-
-<a href='{% url 'network' %}'>Find my network</a>
-
-</body>
 </html>
