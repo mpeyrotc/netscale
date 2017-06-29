@@ -13,16 +13,25 @@ nav{
     letter-spacing: 1px;
 }
 
-nav a{
+nav a, nav input{
     float: right;
     text-decoration: none;
     margin: 1em .7em auto 0.7em;
     color: black;
 }
 
+
 nav a img{
     width: 3em;
     margin-top: -1em;
+}
+
+#search{
+    background: none;
+    border: none;
+    border-bottom: 1px solid #36CAE8;
+    font-family: 'Lato', 'sans-serif';
+    color: black;
 }
 
 #home-default{
@@ -33,7 +42,7 @@ nav a img{
 
 }
 
-#content{
+#home-content{
     position: fixed;
     top: 50%;
     left: 50%;
@@ -42,7 +51,7 @@ nav a img{
 }
 
 h1{
-    font-size: 4em;
+    font-size: 5em;
 }
 
 h3{
@@ -52,13 +61,15 @@ h3{
 
 .button {
     border: none;
-    width: 160px;
+    width: 170px;
     padding: .6em 2em;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: .9em;
-    margin: 1em;
+    margin: 1.5em;
+    letter-spacing: 1px;
+    font-weight: 400;
 }
 
 .blue-fill{
@@ -73,4 +84,47 @@ h3{
     -webkit-box-sizing: border-box;
     border: 1px solid black;
     background: none;
+}
+
+.modal-dialog{
+    border-radius: none;
+}
+
+.modal-header, .modal-footer{
+    border:none;
+}
+
+.field-input{
+    margin: 3%;
+    font-family: 'Lato';
+    font-weight: 300;
+    font-size: 1.25em;
+    width: 70%;
+    border:none;
+    border-bottom:1px solid #F88451;
+    background: none;
+}
+
+#login-title{
+    font-size: 1.75em;
+}
+
+#login-submit{
+    background: none;
+    border: none;
+}
+
+.default-title{
+    font-size: 1.75em;
+}
+
+#signup-content{
+    margin: 5% 20% auto 20%;
+    background: white;
+    padding: 5%;
+}
+
+#menu1{
+    background: none;
+    border: none;
 }
