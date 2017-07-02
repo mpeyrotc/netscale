@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import User
+import datetime
 
 # Create your models here.
 
@@ -24,7 +25,9 @@ class UserProfile(models.Model):
     contacts = models.TextField(null=True)
     threads = models.ManyToManyField(Thread, symmetrical=False, blank=True)
     bio = models.CharField(max_length=200, blank=True, default='')
-    picture = models.CharField(blank=True, max_length=256)
+    picture = models.CharField(blank=True, max_length=256, null=True)
+    workplace = models.CharField(blank=True, max_length=30, default="")
+    update_time = models.DateTimeField(blank=True, default=datetime.datetime.now)
 
     @staticmethod
     def get_user_profile_with_id(id):

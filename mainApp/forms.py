@@ -19,7 +19,7 @@ class RegistrationForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        exclude = ('user', 'password', 'gmail_id', 'friends', 'contacts', 'threads', 'picture', 'bio')
+        exclude = ('user', 'password', 'gmail_id', 'friends', 'contacts', 'threads', 'picture', 'bio', 'update_time')
 
     # Customizes form validation for properties that apply to more
     # than one field.  Overrides the forms.Form.clean function.
@@ -93,7 +93,8 @@ class ProfileForm(forms.ModelForm):
         model = UserProfile
         exclude = ('user', 'password', 'gmail_id', 'friends', 'contacts', 'threads', 'username')
         widgets = {
-            'bio': forms.Textarea(attrs={'cols': 40, 'rows': 4})
+            'bio': forms.Textarea(attrs={'cols': 40, 'rows': 4}),
+            'update_time': forms.HiddenInput
         }
 
     picture = forms.FileField(required=False)

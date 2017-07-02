@@ -33,9 +33,9 @@ def home(request):
     profile = get_profile(request)
     context = {"profile": profile}
     now = datetime.datetime.now()
-    search_results = []
-
-    print profile.gmail_account
+    thirdparty_results = []
+    friends_results = []
+    my_results = []
 
     if request.method == 'POST':
         search_token = request.POST['search_value']
@@ -47,6 +47,9 @@ def home(request):
                 value = 0
                 friend_profile = UserProfile.objects.filter(user__exact=
                                                              User.objects.filter(id__exact=friend.id)[0])[0]
+
+                if search_token in friend_profile.workplace:
+                    friends_results.append(friend_profile)
 
                 for thread in friend_profile.threads.all():
                     if thread.contacts:
@@ -70,11 +73,31 @@ def home(request):
                                     else:
                                         value += temp * 0.2
 
-                search_results.append((friend_profile, value))
-        else:
-            context["result"] = ""
+                if value > 0:
+                    thirdparty_results.append((friend_profile, value))
+                thirdparty_results.sort(key=lambda tup: tup[1])
 
-        value = 20
+            thirdparty_results.reverse()
+
+            if len(thirdparty_results) > 5:
+                thirdparty_results = thirdparty_results[0:4]
+
+            if len(thirdparty_results) != 0:
+                context["thirdparty_result"] = thirdparty_results
+            else:
+                context["thirdparty_result"] = ""
+
+            if len(friends_results) != 0:
+                context["friend_result"] = friends_results
+            else:
+                context["friend_result"] = ""
+
+        else:
+            context["thirdparty_result"] = ""
+            context["friend_result"] = ""
+
+        # THIS IS FOR THE USER PROFILE
+        value = 0
         for thread in profile.threads.all():
             if thread.contacts:
                 contacts = thread.contacts.split(",")
@@ -84,6 +107,7 @@ def home(request):
                         p = re.compile("[0-9]+ [a-zA-Z]{3} ([0-9]+)")
                         m = p.search(thread.date)
                         temp = thread.size * 3
+                        print(temp)
 
                         if m:
                             year = int(m.group(1))
@@ -97,14 +121,18 @@ def home(request):
                             else:
                                 value += temp * 0.2
 
-        search_results.append((profile, value))
-        search_results.sort(key=lambda tup: tup[1])
-        search_results.reverse()
+            if value > 0:
+                my_results.append((profile, value))
+            my_results.sort(key=lambda tup: tup[1])
 
-        if len(search_results) > 5:
-            search_results = search_results[0:4]
+        my_results.reverse()
+        if len(my_results) > 5:
+            my_results = my_results[0:4]
 
-        context["result"] = search_results
+        if len(my_results) != 0:
+            context["my_result"] = my_results
+        else:
+            context["my_result"] = ""
     else:
         context["result"] = ""
 
@@ -391,7 +419,7 @@ def edit_profile(request):
         context['entry'] = profile
         context['form'] = form
 
-        return render(request, 'profile.html', context)
+        return redirect(reverse('home'))
 
     except UserProfile.DoesNotExist:
         return redirect(reverse('home'))
