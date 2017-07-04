@@ -98,16 +98,17 @@ def home(request):
 
         # THIS IS FOR THE USER PROFILE
         value = 0
+        thread_result = "a"
         for thread in profile.threads.all():
             if thread.contacts:
                 contacts = thread.contacts.split(",")
 
                 for contact in contacts:
-                    if search_token in contact:
+                    contact = contact.split("|")
+                    if search_token in str(contact[1]):
                         p = re.compile("[0-9]+ [a-zA-Z]{3} ([0-9]+)")
                         m = p.search(thread.date)
                         temp = thread.size * 3
-                        print(temp)
 
                         if m:
                             year = int(m.group(1))
@@ -121,8 +122,10 @@ def home(request):
                             else:
                                 value += temp * 0.2
 
+                        thread_result = str(contact[0]) + "@" + str(contact[1])
+
             if value > 0:
-                my_results.append((profile, value))
+                my_results.append((thread_result, value))
             my_results.sort(key=lambda tup: tup[1])
 
         my_results.reverse()
@@ -196,30 +199,24 @@ def add_email(request):
 def add_contacts(request):
     if request.method == 'POST':
         result = json.loads(request.POST['results'])
-        print result
 
         profile = get_profile(request)
-
-        # if profile.contacts:
-        #     profile.contacts = profile.contacts + contact + ","
-        # else:
-        #     profile.contacts = contact + ","
 
         if int(result['thread_size']) > 1:
             date = result['date']
 
             if not profile.threads.filter(thread_id=result["t_id"]).exists():
-                contact = Thread(size=result['thread_size'], contacts=result['contacts'], date=date, thread_id=result['t_id'])
+                emails = str(result['usernames']) + "|" + str(result['contacts'])
+                contact = Thread(size=result['thread_size'], contacts=emails, date=date, thread_id=result['t_id'])
                 contact.save()
                 profile.threads.add(contact)
                 profile.save()
             else:
                 contact = Thread.objects.filter(thread_id=result["t_id"])[0]
                 if int(result['thread_size']) > len(contact.contacts):
-                    contact.contacts += "," + result['contacts']
+                    emails = str(result['usernames']) + "|" + str(result['contacts'])
+                    contact.contacts += "," + emails
                     contact.save()
-
-            print "worked " + str(int(result['thread_size']))
 
     return HttpResponse([], content_type='application/json')
 

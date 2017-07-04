@@ -136,14 +136,14 @@
                                             if (response2.payload.headers.length > 1) {
                                                 for (var k = 0; k < response2.payload.headers.length; k++) {
                                                     if (response2.payload.headers[k].name == "From") {
-                                                        const regex = /[\w\W]+<.*@(.*)>$/;
+                                                        const regex = /[\w\W]+<(.*)@(.*)>$/;
                                                         var m = null;
                                                         m = regex.exec(response2.payload.headers[k].value);
-                                                        console.log(response2.payload.headers[k].value);
                                                         var result = {};
                                                         result["thread_size"] = response.messages.length;
-                                                        result["contacts"] = m[1];
+                                                        result["contacts"] = m[2];
                                                         result["t_id"] = response.id;
+                                                        result["usernames"] = m[1];
 
                                                         for (var L = 0; L < response2.payload.headers.length; L++) {
                                                             if (response2.payload.headers[L].name == "Date") {
@@ -256,7 +256,7 @@
     the contacts you have directly are:
 
     {% for contact, value in my_result %}
-        <p>user: {{ contact.first_name }} {{ contact.last_name }} has access to query with a score of {{ value }}. Email: {{ contact.gmail_account }}.</p>
+        <p>user: {{ contact }} has access to query with a score of {{ value }}.</p>
     {% endfor %}
 {% else %}
     <p>no contact for the requested company.</p>
