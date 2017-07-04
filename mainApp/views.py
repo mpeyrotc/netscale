@@ -56,6 +56,7 @@ def home(request):
                         contacts = thread.contacts.split(",")
 
                         for contact in contacts:
+                            contact = contact.split("|")[1]
                             if search_token in contact:
                                 p = re.compile("[0-9]+ [a-zA-Z]{3} ([0-9]+)")
                                 m = p.search(thread.date)
@@ -125,7 +126,7 @@ def home(request):
                         thread_result.append(str(contact[0]) + "@" + str(contact[1]))
 
             if value > 0:
-                my_results.append((thread_result, value))
+                my_results.append((set(thread_result), value))
             my_results.sort(key=lambda tup: tup[1])
 
         my_results.reverse()
