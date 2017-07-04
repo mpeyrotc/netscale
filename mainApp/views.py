@@ -213,7 +213,7 @@ def add_contacts(request):
                 profile.save()
             else:
                 contact = Thread.objects.filter(thread_id=result["t_id"])[0]
-                if int(result['thread_size']) > len(contact.contacts):
+                if int(result['thread_size']) > len(contact.contacts.split(",")):
                     emails = str(result['usernames']) + "|" + str(result['contacts'])
                     contact.contacts += "," + emails
                     contact.save()
@@ -347,6 +347,7 @@ def network(request):
                     contacts = thread.contacts.split(",")
 
                     for contact in contacts:
+                        contact = contact.split("|")
                         if contact in result:
                             result[contact] += 1
                         else:
@@ -357,6 +358,7 @@ def network(request):
             contacts = thread.contacts.split(",")
 
             for contact in contacts:
+                contact = contact.split("|")
                 if contact in result:
                     result[contact] += 1
                 else:
