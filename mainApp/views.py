@@ -125,9 +125,9 @@ def home(request):
 
                         thread_result.append(str(contact[0]) + "@" + str(contact[1]))
 
-            if value > 0:
-                my_results.append((set(thread_result), value))
-            my_results.sort(key=lambda tup: tup[1])
+        if value > 0:
+            my_results.append((set(thread_result), value))
+        my_results.sort(key=lambda tup: tup[1])
 
         my_results.reverse()
         if len(my_results) > 5:
