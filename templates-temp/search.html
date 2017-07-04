@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="NetScale">
+    <title>NetScale</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous"> 
+    <link rel="stylesheet" media="all" type="text/css" href="../static/css/profile.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+</head>
+
+<body>
+    <nav>
+        <a href="profile.html" style="float:left;"><img src="../static/imgs/logo-icon.png" id="logo"/></a>
+        <div class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn">
+                <img src="../static/imgs/pictureplaceholder-small.png"/ style="width: 2em; margin: none;">
+                JOHN SMITH
+            </a>
+            <div class="dropdown-content">
+              <a href="#" data-toggle="modal" data-target="#requestsModal">Friend Requests [1]</a>
+              <a href="settings.html">Settings</a>
+            </div>
+        </div>
+        <input type="search" id="search" placeholder="Search...">
+    </nav>
+    
+    <div class="modal fade" id="requestsModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+            <center>
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div id="pm-title">
+                  FRIEND REQUESTS
+              </div>
+              <table id="friend-requests">
+                <tr>
+                    <td class="request-name">BILLY BOB JOE</td>
+                    <td><i class="material-icons" style="color:#36CAE8;">person_add</i></td>
+                    <td><i class="material-icons" style="color:#F88451">close</i></td>
+                </tr>
+                <tr>
+                    <td class="request-name">BILLY BOB JOE</td>
+                    <td><i class="material-icons" style="color:#36CAE8;">person_add</i></td>
+                    <td><i class="material-icons" style="color:#F88451">close</i></td>
+                </tr>
+              </table>
+              
+            </div>
+            <div class="modal-footer">
+            </div>
+            </div>
+            </center>
+
+        </div>
+    </div>
+    <div id="container" style="margin:20%;" align="center">
+        <input type="search" id="search-large" placeholder="Google">
+        <div align="center" style="margin-left: 20%;">
+        <div class="search-section" align="center">
+            <div class="search-title">
+                Your Contacts
+            </div>
+            <div class="results">
+                <div class="listing">
+                    <span class="name">Billy Bob Joe <span class="score">[30]</span></span>
+                    <i class="material-icons" style="font-size: 24px; margin: none;">mail_outline</i>
+                </div>
+                <div class="listing">
+                    <span class="name">Billy Bob Joe <span class="score">[30]</span></span>
+                    <i class="material-icons" style="font-size: 24px; margin: none;">mail_outline</i>
+                </div>
+                <div class="listing">
+                    <span class="name">Billy Bob Joe <span class="score">[30]</span></span>
+                    <i class="material-icons" style="font-size: 24px; margin: none;">mail_outline</i>
+                </div>
+            </div>
+        </div>
+        <div class="search-section" align="center">
+            <div class="search-title">
+                Your Friends
+            </div>
+            <div class="results">
+                <div class="listing">
+                    <span class="name">Billy Bob Joe <span class="score">[30]</span></span>
+                    <i class="material-icons" style="font-size: 24px; margin: none;">mail_outline</i>
+                </div>
+                <div class="listing">
+                    <span class="name">Billy Bob Joe <span class="score">[30]</span></span>
+                    <i class="material-icons" style="font-size: 24px; margin: none;">mail_outline</i>
+                </div>
+                <div class="listing">
+                    <span class="name">Billy Bob Joe <span class="score">[30]</span></span>
+                    <i class="material-icons" style="font-size: 24px; margin: none;">mail_outline</i>
+                </div>
+            </div>
+        </div>
+        <div class="search-section" align="center">
+            <div class="search-title">
+                Your Friends of Friends
+            </div>
+            <div class="results">
+                <div class="listing">
+                    <span class="name">Billy Bob Joe <span class="score">[30]</span></span>
+                    <i class="material-icons" style="font-size: 24px; margin: none;">mail_outline</i>
+                </div>
+                <div class="listing">
+                    <span class="name">Billy Bob Joe <span class="score">[30]</span></span>
+                    <i class="material-icons" style="font-size: 24px; margin: none;">mail_outline</i>
+                </div>
+                <div class="listing">
+                    <span class="name">Billy Bob Joe <span class="score">[30]</span></span>
+                    <i class="material-icons" style="font-size: 24px; margin: none;">mail_outline</i>
+                </div>
+            </div>
+        </div>
+            </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+</body>
+
+</html>
