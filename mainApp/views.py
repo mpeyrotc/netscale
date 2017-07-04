@@ -347,7 +347,7 @@ def network(request):
                     contacts = thread.contacts.split(",")
 
                     for contact in contacts:
-                        contact = contact.split("|")
+                        contact = contact.split("|")[1]
                         if contact in result:
                             result[contact] += 1
                         else:
@@ -358,7 +358,7 @@ def network(request):
             contacts = thread.contacts.split(",")
 
             for contact in contacts:
-                contact = contact.split("|")
+                contact = contact.split("|")[1]
                 if contact in result:
                     result[contact] += 1
                 else:
