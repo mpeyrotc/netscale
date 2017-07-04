@@ -98,7 +98,7 @@ def home(request):
 
         # THIS IS FOR THE USER PROFILE
         value = 0
-        thread_result = "a"
+        thread_result = []
         for thread in profile.threads.all():
             if thread.contacts:
                 contacts = thread.contacts.split(",")
@@ -122,7 +122,7 @@ def home(request):
                             else:
                                 value += temp * 0.2
 
-                        thread_result = str(contact[0]) + "@" + str(contact[1])
+                        thread_result.append(str(contact[0]) + "@" + str(contact[1]))
 
             if value > 0:
                 my_results.append((thread_result, value))

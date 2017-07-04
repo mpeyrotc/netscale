@@ -256,7 +256,9 @@
     the contacts you have directly are:
 
     {% for contact, value in my_result %}
-        <p>user: {{ contact }} has access to query with a score of {{ value }}.</p>
+        {% for con in contact %}
+            <p>user: {{ contact }} has access to query with a score of {{ value }}.</p>
+        {% endfor %}
     {% endfor %}
 {% else %}
     <p>no contact for the requested company.</p>
