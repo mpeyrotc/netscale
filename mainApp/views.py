@@ -139,7 +139,7 @@ def home(request):
                 return_values.append((val, (value / len(thread_result)) * user_results[val]))
 
             return_values = sorted(return_values)
-            return_values = reverse(return_values)
+            return_values = return_values.reverse()
             my_results.append((return_values, value))
         my_results.sort(key=lambda tup: tup[1])
 
