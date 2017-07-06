@@ -255,8 +255,8 @@
 {% if my_result %}
     {% for contact, value in my_result %}
         <p>user has access to query with a score of {{ value }} through:</p>
-        {% for con in contact %}
-            <p>{{ con }}</p>
+        {% for con, val in contact %}
+            <p>{{ con }} with {{ val }}</p>
         {% endfor %}
     {% endfor %}
 {% else %}

@@ -99,6 +99,7 @@ def home(request):
 
         # THIS IS FOR THE USER PROFILE
         value = 0
+        user_results = {}
         thread_result = []
         for thread in profile.threads.all():
             if thread.contacts:
@@ -123,10 +124,21 @@ def home(request):
                             else:
                                 value += temp * 0.2
 
-                        thread_result.append(str(contact[0]) + "@" + str(contact[1]))
+                        contact_user = str(contact[0]) + "@" + str(contact[1])
+
+                        if contact_user in user_results:
+                            user_results[contact_user] += 1
+                        else:
+                            user_results[contact_user] = 1
+
+                        thread_result.append(contact_user)
 
         if value > 0:
-            my_results.append((set(thread_result), value))
+            return_values = []
+            for val in set(thread_result):
+                return_values.append((val, (value / len(thread_result)) * user_results[val]))
+
+            my_results.append((sorted(return_values), value))
         my_results.sort(key=lambda tup: tup[1])
 
         my_results.reverse()
@@ -334,6 +346,7 @@ def network(request):
     context = {}
     result = {}
     profile = get_profile(request)
+    now = datetime.datetime.now()
 
     if profile.friends:
         friends = Friend.objects.friends(request.user)
@@ -342,17 +355,33 @@ def network(request):
             friend_profile = UserProfile.objects.filter(user__exact=
                                                         User.objects.filter(id__exact=friend.id)[0])[0]
 
-            print friends
             for thread in friend_profile.threads.all():
                 if thread.contacts:
                     contacts = thread.contacts.split(",")
 
                     for contact in contacts:
                         contact = contact.split("|")[1]
+                        p = re.compile("[0-9]+ [a-zA-Z]{3} ([0-9]+)")
+                        m = p.search(thread.date)
+                        temp = thread.size * 3
+
+                        if m:
+                            year = int(m.group(1))
+
+                            if ((now.year - year) <= 3):
+                                pass
+                            if ((now.year - year) <= 5):
+                                temp *= 0.87
+                            elif ((now.year - year) <= 10):
+                                temp *= 0.6
+                            else:
+                                temp *= 0.2
+
+
                         if contact in result:
-                            result[contact] += 1
+                            result[contact] += temp
                         else:
-                            result[contact] = 1
+                            result[contact] = temp
 
     for thread in profile.threads.all():
         if thread.contacts:
@@ -360,10 +389,30 @@ def network(request):
 
             for contact in contacts:
                 contact = contact.split("|")[1]
+
+                p = re.compile("[0-9]+ [a-zA-Z]{3} ([0-9]+)")
+                m = p.search(thread.date)
+                temp = thread.size * 3
+
+                if m:
+                    year = int(m.group(1))
+
+                    if ((now.year - year) <= 3):
+                        pass
+                    elif ((now.year - year) <= 5):
+                        temp *= 0.87
+                    elif ((now.year - year) <= 10):
+                        temp *= 0.6
+                    else:
+                        temp *= 0.2
+
                 if contact in result:
-                    result[contact] += 1
+                    result[contact] += temp
                 else:
-                    result[contact] = 1
+                    result[contact] = temp
+
+
+
 
     sorted_result = sorted(result.items(), key=operator.itemgetter(1))
     context['result'] = reversed(sorted_result)
