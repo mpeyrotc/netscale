@@ -110,7 +110,7 @@ def home(request):
                     if search_token in str(contact[1]):
                         p = re.compile("[0-9]+ [a-zA-Z]{3} ([0-9]+)")
                         m = p.search(thread.date)
-                        temp = thread.size * 3
+                        temp = thread.size * 4
 
                         if m:
                             year = int(m.group(1))
@@ -138,7 +138,9 @@ def home(request):
             for val in set(thread_result):
                 return_values.append((val, (value / len(thread_result)) * user_results[val]))
 
-            my_results.append((sorted(return_values), value))
+            return_values = sorted(return_values)
+            return_values = reverse(return_values)
+            my_results.append((return_values, value))
         my_results.sort(key=lambda tup: tup[1])
 
         my_results.reverse()
@@ -392,7 +394,7 @@ def network(request):
 
                 p = re.compile("[0-9]+ [a-zA-Z]{3} ([0-9]+)")
                 m = p.search(thread.date)
-                temp = thread.size * 3
+                temp = thread.size * 4
 
                 if m:
                     year = int(m.group(1))
