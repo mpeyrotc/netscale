@@ -10,17 +10,6 @@
 <!-- <input type="hidden" id="profile_contacts" name="profile_contacts" value="{{ profile.contacts }}"> -->
 
 <!--Add buttons to initiate auth sequence and sign out-->
-<button id="authorize-button" style="display: none;">Authorize</button>
-<button id="signout-button" style="display: none;">Sign Out</button>
-<a href="{% url 'logout' %}">
-    <button style='float: right' class="btn btn-warning">Logout</button>
-</a>
-
-<form id="searchbox" method="post" action="{% url 'home' %}">
-    <input name='search_value' type="text" placeholder="Type here">
-    <input id="submit" type="submit" value="Search">
-    {% csrf_token %}
-</form>
 
 <pre id="content"></pre>
 
@@ -248,6 +237,18 @@
 
 
 </script>
+
+<form id="searchbox" method="post" action="{% url 'home' %}">
+    <input name='search_value' type="text" placeholder="Type here">
+    <input id="submit" type="submit" value="Search">
+    {% csrf_token %}
+</form>
+
+<button id="authorize-button" style="display: none;">Authorize</button>
+<button id="signout-button" style="display: none;">Sign Out</button>
+<a href="{% url 'logout' %}">
+    <button style='float: right' class="btn btn-warning">Logout</button>
+</a>
 
 {{ profile.gmail_account }}
 
