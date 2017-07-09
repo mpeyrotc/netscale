@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>NetScale</title>
     <meta charset='utf-8'/>
@@ -115,120 +116,112 @@
 
                     for (var i = 0; i < Math.min(numThreads, responseThreads.length); i++) {
                             var thread = responseThreads[i];
-
                             getThread('me', '' + thread.id, function (response) {
-                                if(response.messages.length > 1) {
-                                    for (var j = 0; j < response.messages.length; j++) {
-                                        var message = response.messages[j];
-
-                                        getMessage('me', '' + message.id, function (response2) {
-                                            if (response2.payload.headers.length > 1) {
-                                                for (var k = 0; k < response2.payload.headers.length; k++) {
-                                                    if (response2.payload.headers[k].name == "From") {
-                                                        const regex = /[\w\W]+<(.*)@(.*)>$/;
-                                                        var m = null;
-                                                        m = regex.exec(response2.payload.headers[k].value);
-                                                        var result = {};
-                                                        result["thread_size"] = response.messages.length;
-                                                        result["contacts"] = m[2];
-                                                        result["t_id"] = response.id;
-                                                        result["usernames"] = m[1];
-
-                                                        for (var L = 0; L < response2.payload.headers.length; L++) {
-                                                            if (response2.payload.headers[L].name == "Date") {
-                                                                result["date"] = response2.payload.headers[L].value;
-                                                            }
+                                const regex = /[\w\W]+<.*@(.*)>$/;
+                                for (j = 0; j < response.messages.length; j++) {
+                                    var message = response.messages[j];
+                                    getMessage('me', '' + message.id, function (response2) {
+                                        if (response2.payload.headers.length > 1) {
+                                            for (k = 0; k < response2.payload.headers.length; k++) {
+                                                if (response2.payload.headers[k].name == "From") {
+                                                    var m;
+                                                    m = regex.exec(response2.payload.headers[k].value);
+                                                    var result = {};
+                                                    result["thread_size"] = response.messages.length;
+                                                    result["contacts"] = m[1];
+                                                    result["t_id"] = thread.id;
+                                                    for (L = 0; L < response2.payload.headers.length; L++) {
+                                                        if (response2.payload.headers[L].name == "Date") {
+                                                            result["date"] = response2.payload.headers[L].value;
                                                         }
                                                         submitContacts(result);
                                                     }
                                                 }
                                             }
-                                        })
-                                    }
+                                        }
+                                    });
                                 }
                             })
                         }
-                    }
-                );
+                    });
 
-                getProfileInfo('me', function (response) {
-                    submitEmail(response.emailAddress)
-                });
+                    getProfileInfo('me', function (response) {
+                        submitEmail(response.emailAddress)
+                    });
+                }
+            } else {
+                authorizeButton.style.display = 'block';
+                signoutButton.style.display = 'none';
             }
-        } else {
-            authorizeButton.style.display = 'block';
-            signoutButton.style.display = 'none';
         }
-    }
 
-
-    function getProfileInfo(userId, callback) {
-        var request = gapi.client.gmail.users.getProfile({
-            'userId': userId,
-        });
-        request.execute(callback);
-    }
-
-    /**
-     *  Sign in the user upon button click.
-     */
-    function handleAuthClick(event) {
-        gapi.auth2.getAuthInstance().signIn();
-    }
-
-    /**
-     *  Sign out the user upon button click.
-     */
-    function handleSignoutClick(event) {
-        gapi.auth2.getAuthInstance().signOut();
-    }
-
-    /**
-     * Retrieve Messages in user's mailbox matching query.
-     *
-     * @param  {String} userId User's email address. The special value 'me'
-     * can be used to indicate the authenticated user.
-     * @param  {String} query String used to filter the Messages listed.
-     * @param  {Function} callback Function to call when the request is complete.
-     */
-    function listMessages(userId, callback) {
-        var getPageOfMessages = function (request, result) {
-            request.execute(function (resp) {
-                result = result.concat(resp.messages);
-                var nextPageToken = resp.nextPageToken;
-                if (nextPageToken) {
-                    request = gapi.client.gmail.users.messages.list({
-                        'userId': userId,
-                        'pageToken': nextPageToken
-                    });
-                    getPageOfMessages(request, result);
-                } else {
-                    callback(result);
-                }
+        function getProfileInfo(userId, callback) {
+            var request = gapi.client.gmail.users.getProfile({
+                'userId': userId
             });
-        };
-        var initialRequest = gapi.client.gmail.users.messages.list({
-            'userId': userId
-        });
-        getPageOfMessages(initialRequest, []);
-    }
-
-    function listThreads(userId, callback) {
-        var getPageOfThreads = function (request, result) {
-            request.execute(function (resp) {
-                result = result.concat(resp.threads);
-                var nextPageToken = resp.nextPageToken;
-                if (nextPageToken) {
-                    request = gapi.client.gmail.users.threads.list({
-                        'userId': userId,
-                        'pageToken': nextPageToken
-                    });
-                    getPageOfThreads(request, result);
-                } else {
-                    callback(result);
-                }
+            request.execute(callback);
+        }
+        /**
+         *  Sign in the user upon button click.
+         */
+        function handleAuthClick(event) {
+            gapi.auth2.getAuthInstance().signIn();
+        }
+        /**
+         *  Sign out the user upon button click.
+         */
+        function handleSignoutClick(event) {
+            gapi.auth2.getAuthInstance().signOut();
+        }
+        /**
+         * Retrieve Messages in user's mailbox matching query.
+         *
+         * @param  {String} userId User's email address. The special value 'me'
+         * can be used to indicate the authenticated user.
+         * @param  {String} query String used to filter the Messages listed.
+         * @param  {Function} callback Function to call when the request is complete.
+         */
+        function listMessages(userId, callback) {
+            var getPageOfMessages = function (request, result) {
+                request.execute(function (resp) {
+                    result = result.concat(resp.messages);
+                    var nextPageToken = resp.nextPageToken;
+                    if (nextPageToken) {
+                        request = gapi.client.gmail.users.messages.list({
+                            'userId': userId
+                            , 'pageToken': nextPageToken
+                        });
+                        getPageOfMessages(request, result);
+                    }
+                    else {
+                        callback(result);
+                    }
+                });
+            };
+            var initialRequest = gapi.client.gmail.users.messages.list({
+                'userId': userId
             });
-        };
+            getPageOfMessages(initialRequest, []);
+        }
+
+        function listThreads(userId, callback) {
+            var getPageOfThreads = function (request, result) {
+                request.execute(function (resp) {
+                    result = result.concat(resp.threads);
+                    var nextPageToken = resp.nextPageToken;
+                    if (nextPageToken) {
+                        request = gapi.client.gmail.users.threads.list({
+                            'userId': userId
+                            , 'pageToken': nextPageToken
+                        });
+                        getPageOfThreads(request, result);
+                    }
+                    else {
+                        callback(result);
+                    }
+                });
+            };
+
         var initialRequest = gapi.client.gmail.users.threads.list({
             'userId': userId
         });
@@ -292,42 +285,21 @@
 {% for profile in user_profiles %}
     {% if user_id != profile.user.id %}
     <hr>
-    <div class='post_data'>
-        <a href='{% url 'profiles' profile.user.id %}'>{{ profile.user.username }}</a>
-        ({{ profile.first_name }} {{ profile.last_name }})</p>
-    </div>
-    {% endif %}
-{% endfor %}
-
-<hr>
-<p>All friends:</p>
-{% friends request.user %}
-
-<p>Friend Requests:</p>
-{% for data in requests %}
+    <div class='post_data'> <a href="{% url 'profiles' profile.user.id %}">{{ profile.user.username }}</a> ({{ profile.first_name }} {{ profile.last_name }})</p>
+    </div> {% endif %} {% endfor %}
     <hr>
-    <div class='post_data'>
-        <a href='{% url 'profiles' data.profile.user.id %}'>{{ data.profile.user.username }}</a>
-        ({{ data.profile.first_name }} {{ data.profile.last_name }}) send you a friend request.
-        <a href='{% url 'accept_request' data.request%}'>accept?</a> or <a href='{% url 'reject_request' data.request%}'>reject?</a></p>
-    </div>
-{% endfor %}
-
-<script async defer src="https://apis.google.com/js/api.js"
-        onload="this.onload=function(){};handleClientLoad('{{ profile.gmail_account }}')"
-        onreadystatechange="if (this.readyState === 'complete') this.onload()">
-</script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="{% static 'js/netscale.js' %}"></script>
-
-<p id="status"></p>
-
-
-
-<a href='{% url 'network' %}'>Find my network</a>
-
-<a href='{% url 'edit_profile' %}'>edit my profile</a>
+    <p>All friends:</p> {% friends request.user %}
+    <p>Friend Requests:</p> {% for data in requests %}
+    <hr>
+    <div class='post_data'> <a href="{% url 'profiles' data.profile.user.id %}">{{ data.profile.user.username }}</a> ({{ data.profile.first_name }} {{ data.profile.last_name }}) send you a friend request. <a href='{% url ' accept_request ' data.request%}'>accept?</a> or <a href='{% url ' reject_request ' data.request%}'>reject?</a></p>
+    </div> {% endfor %}
+    <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad('{{ profile.gmail_account }}')" onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{% static 'js/netscale.js' %}"></script>
+    <p id="status"></p> <a href="{% url 'network' %}">Find my network</a> </body>
+<a href="{% url 'edit_profile' %}">edit my profile</a>
 
 </body>
 </html>

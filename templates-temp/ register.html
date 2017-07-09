@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="NetScale">
+    <title>NetScale</title> 
+    
+   <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" media="all" type="text/css" href="../static/css/home.css" />
+</head>
+
+<body id="home-default">
+    <nav>
+        <a href="index.html" style="float:left;"><img src="../static/imgs/logo-icon.png"></a>
+        <a href="" data-toggle="modal" data-target="#loginModal">LOGIN </a> 
+        <a href="register.html" style="color:#36CAE8;">SIGN UP</a>   
+        <a href=""></a>
+    </nav>
+    
+    <!-- Login Modal-->
+    <div class="modal fade" id="loginModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+            <center>
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div id="login-title">
+                  Log onto NetScale
+              </div>
+              <input class="field-input" type="text" name="username" id="id_username" placeholder="Username" autocomplete><br>
+              <input class="field-input" type="password" name="password" id="id_password" placeholder="Password">
+            </div>
+            <div class="modal-footer">
+              <button type="button" id="login-submit">
+                <a href="profile.html">
+                <img src="../static/imgs/next.png" style="width: 25%;"/>
+                </a>
+              </button>
+            </div>
+            </div>
+            </center>
+
+        </div>
+    </div>
+    
+    <form id="signup-content">
+        <center>
+            <h1 class="default-title">Create an Account</h1>
+            <input class="field-input" type="text" name="first_name" id="id_first_name" placeholder="First Name" autocomplete><br>
+            <input class="field-input" type="text" name="last_name" id="id_last_name" placeholder="Last Name" autocomplete><br>
+            <input class="field-input" type="email" name="gmail" id="id_gmail" placeholder="Gmail Account" autocomplete><br>
+            <input class="field-input" type="text" name="username" id="id_username" placeholder="Username" autocomplete><br>
+              <input class="field-input" type="password" name="password" id="id_password" placeholder="Password">
+            <br>
+              <input class="field-input" type="password" name="password" id="id_password" placeholder="Confirm Password">
+            <input class='button blue-fill' type="submit" value="SIGN UP" />
+        </center>
+    </form>
+    
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+</body>
+    
+</html>
