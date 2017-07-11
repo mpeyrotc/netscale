@@ -244,7 +244,8 @@
     {% csrf_token %}
 </form>
 
-<button id="authorize-button" style="display: none;">Authorize</button>
+<button id="authorize-button">Authorize</button>
+
 <button id="signout-button" style="display: none;">Sign Out</button>
 <a href="{% url 'logout' %}">
     <button style='float: right' class="btn btn-warning">Logout</button>
