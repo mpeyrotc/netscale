@@ -7,6 +7,8 @@ body{
 nav{
     font-weight: 400;
     letter-spacing: 1px;
+    margin-right: 3%;
+    margin-left: 3%;
 }
 nav a{
     color: black;
@@ -173,10 +175,12 @@ textarea{
     text-align: left;
     font-weight: 400;
     font-size: 1.25em;
+    padding: 10px;
 }
 
 .listing{
     font-size: 1.125em;
+    padding: 3%;
 }
 
 .listing .name{
@@ -200,4 +204,8 @@ textarea{
 }
 .request-name{
     padding-right: 40px;
+}
+
+.search-section table th{
+    text-align: center;
 }
