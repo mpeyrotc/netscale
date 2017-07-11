@@ -40,6 +40,8 @@ def home(request):
     if request.method == 'POST':
         search_token = request.POST['search_value']
 
+        search_token = search_token.strip().lower()
+
         if profile.friends:
             friends = Friend.objects.friends(request.user)
 
