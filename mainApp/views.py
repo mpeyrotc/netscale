@@ -248,6 +248,7 @@ def profiles(request, id):
         profile = UserProfile.get_user_profile_with_id(id)
         context['profile'] = profile
         context['id'] = id
+        context['profile_friends'] = Friend.objects.friends(profile.user)
         context['user_id'] = request.user.id
         context['is_followed'] = UserProfile.objects.filter(user__exact=current_user)[0].friends.filter(
             id=UserProfile.objects.filter(user__exact=User.objects.filter(id__exact=id))[0].id)

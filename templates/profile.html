@@ -1,18 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Profile page</title>
+    <meta charset="utf-8"/>
+    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="NetScale">
+    <title>NetScale</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" media="all" type="text/css" href="{% static 'css/profile.css' %}"/>
 </head>
+
 <body>
-This is the profile page for {{ profile.first_name }} {{ profile.last_name }}.
+<nav>
+    <a href="{% url 'home' %}" style="float:left;"><img src="{% static 'imgs/logo-icon.png' %}" id="logo"/></a>
+    <div class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">
+            <img src="{% static 'imgs/pictureplaceholder-small.png' %} " style="width: 2em; margin: none;"/>
+            {{ user_profile.first_name }} {{ user_profile.last_name }}
+        </a>
+        <div class="dropdown-content">
+            <a href="#">Friend Requests</a>
+            <a href="#">Friends</a>
+            <a href="{% url 'network' %}">Top Companies</a>
+            <a href="{% url 'edit_profile' %}">Settings</a>
+            <a href="{% url 'logout' %}" style="clear:both;">Logout</a>
+        </div>
+    </div>
+    <input type="search" placeholder="Search...">
+</nav>
+<div id="container">
+    <div class="row">
+        <div class="col-sm-4" id="profile-sidebar">
+            </img src="{% static 'imgs/pictureplaceholder-large.png' %}" id="profile-pic">
+            <br/>
+            <span class="profile-name">{{ profile.first_name }} {{ profile.last_name }}</span>
+            <br/>
+            <span class="profile-info" style="color: #F88451;">{{ profile.workplace }}</span>
 
-<p>
-    {% if not is_friend %}
-        Send her a <a href="{% url 'send_request' profile.user.id request.user.id %}">friend request</a>.
-    {% endif %}
-</p>
+            <div class="profile-section">
+                    <span class="profile-title">
+                        EMAIL
+                    </span>
+                <p>
+                    {{ profile.gmail_account }}
+                </p>
+            </div>
 
-<p>{{ bla }}</p>
+            <div class="profile-section">
+                    <span class="profile-title">
+                        BIOGRAPHY
+                    </span>
+                <p>
+                    {% if profile.bio == "" %}
+                        This user has no biography information yet.
+                    {% else %}
+                        {{ profile.bio }}
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="profile-section">
+                    <span class="profile-title">
+                        BEFRIEND
+                    </span>
+                <p>
+                    {% if not is_friend %}
+                        Send her a <a href="{% url 'send_request' profile.user.id request.user.id %}">friend request</a>
+                        .
+                    {% endif %}
+                </p>
+            </div>
+
+
+        </div>
+        <div class="col-sm-8">
+            <div class="profile-section">
+                    <span class="profile-title">
+                        FRIENDS
+                    </span>
+                <table>
+                    <tr>
+                        {% for _ in profile_friends %}
+                            <td align="center"><img src="{% static 'imgs/pictureplaceholder-large.png' %}"/></td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        {% for friend in profile_friends %}
+                            <th><a href="">{{ friend }}</a></th>
+                        {% endfor %}
+                    </tr>
+                </table>
+            </div>
+            <div class="profile-section">
+                    <span class="profile-title">
+                        COMPANIES
+                    </span>
+                <br>
+                This user does not want to show his contact list personally.
+                {#                    <table>#}
+                {#                        <tr>#}
+                {#                            <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>#}
+                {#                            <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>#}
+                {#                            <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>#}
+                {#                            <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>#}
+                {#                            <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>#}
+                {#                        </tr>#}
+                {#                        <tr>#}
+                {#                            <th><a href="">GOOGLE</a></th>#}
+                {#                            <th><a href="">TESLA</a></th>#}
+                {#                            <th><a href="">KPMG</a></th>#}
+                {#                            <th><a href="">SANDISK</a></th>#}
+                {#                            <th><a href="">APPLE</a></th>#}
+                {#                        </tr>#}
+                {#                    </table>#}
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+        integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script>
 </body>
+
 </html>
