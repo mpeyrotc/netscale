@@ -1,31 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>profile</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="NetScale">
+    {% load static %}
+    <title>NetScale</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" media="all" type="text/css" href="{% static 'css/profile.css' %}" />
 </head>
+
 <body>
-{% if profile.picture %}
-    <img src='{{ profile.picture }}' alt='profile img' width="200px" height='200px'>
-{% endif %}
-
-<form enctype="multipart/form-data" method="post" action="{% url 'edit_profile' %}">
-    <table>
+    <nav>
+        <a href="{% url 'home' %}" style="float:left;"><img src="{% static 'imgs/logo-icon.png' %}" id="logo"/></a>
+        <div class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn">
+                <img src="{% static 'imgs/pictureplaceholder-small.png'%} " style="width: 2em; margin: none;"/>
+                {{ profile.first_name }} {{ profile.last_name }}
+            </a>
+            <div class="dropdown-content">
+              <a href="#">Friend Requests</a>
+              <a href="#">Friends</a>
+              <a href="{% url 'network' %}">Top Companies</a>
+              <a href="{% url 'edit_profile' %}">Settings</a>
+              <a href="{% url 'logout' %}" style="clear:both;">Logout</a>
+            </div>
+        </div>
+        <input type="search" placeholder="Search...">
+    </nav>
+    <div id="container" style="margin:20%;" align="center">
+        <div id="settings-title">SETTINGS</div>
+        <div id="settings-subtitle">Edit your profile</div>
         {% for field in form.visible_fields %}
-            <tr>
-                <td>{{ field.label_tag }}</td>
-                <td>{{ field }}</td>
-                <td style="color: red">{{ field.errors }}</td>
-            </tr>
+            {% if field.label == "Password" or field.label == "Confirm password" %}
+                <input class="field-input" type="password" name="{{ field.name }}" id="{{ field.id_for_label }}"
+                       placeholder="{{ field.label }}"><br>
+            {% else %}
+                {% if field.label == "Gmail account" %}
+                    <input class="field-input" type="email" name="{{ field.name }}" id="{{ field.id_for_label }}"
+                           placeholder="{{ field.label }}"><br>
+                {% elif field.label == "Bio"%}
+                    <textarea name="{{ field.name }}" id="{{ field.id_for_label }}"
+                              placeholder="{{ field.label }}"></textarea><br>
+                    {% else %}
+                    <input class="field-input" type="text" name="{{ field.name }}" id="{{ field.id_for_label }}"
+                           placeholder="{{ field.label }}"><br>
+                {% endif %}
+            {% endif %}
         {% endfor %}
-    </table>
-    {% for field in form.hidden_fields %}
-        {{ field }}
-    {% endfor %}
-    {% csrf_token %}
-    <br>
-    <input class='btn btn-warning' type="submit" value="Change"/>
-</form>
-
+            {% csrf_token %}
+        <button type="submit" id="login-submit" style="float:right;" value="Change">
+                <img src="{% static 'imgs/next.png' %}" style="width: 25%;"/>
+        </button>
+        </form>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 </body>
+
 </html>

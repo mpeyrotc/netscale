@@ -420,6 +420,7 @@ def network(request):
 
     sorted_result = sorted(result.items(), key=operator.itemgetter(1))
     context['result'] = reversed(sorted_result)
+    context['levels'] = range(len(sorted_result) / 5)
 
     return render(request, 'network.html', context)
 
@@ -435,6 +436,7 @@ def edit_profile(request):
         if request.method == 'GET':
             form = ProfileForm(instance=profile)
             context['form'] = form
+            context['profile'] = profile
 
             context['threads'] = profile.threads.all()
 
