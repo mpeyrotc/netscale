@@ -1,34 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Register</title>
+    <meta charset="utf-8"/>
+    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="NetScale">
+    <title>NetScale</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" media="all" type="text/css" href="{% static 'css/home.css' %} "/>
 </head>
-<body>
-This is the registration page!
 
-{% for error in form.non_field_errors %}
-    <p style="color: red">
-    {{ error }}
-    </p>
-  {% endfor %}
+<body id="home-default">
+<nav>
+    <a href="{% url 'home' %}" style="float:left;"><img src="{% static 'imgs/logo-icon.png' %}"></a>
+    <a href="{% url 'login' %}" data-toggle="modal" data-target="#loginModal">LOGIN </a>
+    <a href="{% url 'registration' %}" style="color:#36CAE8;">SIGN UP</a>
+    <a href=""></a>
+</nav>
 
-  <form enctype="multipart/form-data" method="post" action="{% url 'registration' %}">
-  <table>
-    {% for field in form.visible_fields %}
-    <tr>
-      <td>{{field.label_tag}}</td>
-      <td>{{field}}</td>
-      <td style="color: red">{{field.errors}}</td>
-    </tr>
-    {% endfor %}
-    </table>
-    {% for field in form.hidden_fields %}
-      {{field}}
-    {% endfor %}
-    {% csrf_token %}
-  <input class='btn btn-warning' type="submit" value="Register" />
-  </form>
+<!-- Login Modal-->
+<div class="modal fade" id="loginModal" role="dialog">
+    <div class="modal-dialog">
 
+        <!-- Modal content-->
+        <div class="modal-content">
+            <center>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form method="post" action="{% url 'login' %}">
+                    <div class="modal-body">
+                        <div id="login-title">
+                            Log onto NetScale
+                        </div>
+                        <input class="field-input" type="text" name="username" id="id_username" placeholder="Username"
+                               autocomplete><br>
+                        <input class="field-input" type="password" name="password" id="id_password"
+                               placeholder="Password">
+                    </div>
+
+
+                    <input type="hidden" name="next" value="{{ next }}"/>
+                    {% csrf_token %}
+
+                    <div class="modal-footer">
+                        <button type="submit" id="login-submit" value="Login">
+                            <img src="{% static 'imgs/next.png' %}" style="width: 25%;"/>
+                        </button>
+                    </div>
+                </form>
+        </div>
+        </center>
+
+    </div>
+</div>
+
+<form id="signup-content" enctype="multipart/form-data" method="post" action="{% url 'registration' %}">
+    <center>
+        <h1 class="default-title">Create an Account</h1>
+
+        {% for field in form.visible_fields %}
+            {% if field.label == "Password" or field.label == "Confirm password" %}
+                <input class="field-input" type="password" name="{{ field.name }}" id="{{ field.id_for_label }}"
+                       placeholder="{{ field.label }}"><br>
+            {% else %}
+                {% if field.label == "Gmail account" %}
+                    <input class="field-input" type="email" name="{{ field.name }}" id="{{ field.id_for_label }}"
+                           placeholder="{{ field.label }}"><br>
+                {% else %}
+                    <input class="field-input" type="text" name="{{ field.name }}" id="{{ field.id_for_label }}"
+                           placeholder="{{ field.label }}"><br>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        {% for field in form.hidden_fields %}
+            {{ field }}
+        {% endfor %}
+
+        {% for error in form.errors %}
+            <p> {{ error }}</p>
+        {% endfor %}
+        {% csrf_token %}
+
+        {#            <input class="field-input" type="text" name="first_name" id="id_first_name" placeholder="First Name" autocomplete><br>#}
+        {#            <input class="field-input" type="text" name="last_name" id="id_last_name" placeholder="Last Name" autocomplete><br>#}
+        {#            <input class="field-input" type="email" name="gmail" id="id_gmail" placeholder="Gmail Account" autocomplete><br>#}
+        {#            <input class="field-input" type="text" name="company" id="company" placeholder="Company">#}
+        {#            <input class="field-input" type="text" name="username" id="id_username" placeholder="Username" autocomplete><br>#}
+        {#              <input class="field-input" type="password" name="password" id="id_password" placeholder="Password">#}
+        {#            <br>#}
+        {#              <input class="field-input" type="password" name="password" id="id_password" placeholder="Confirm Password">#}
+        <input class='button blue-fill' type="submit" value="Register"/>
+    </center>
+</form>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+        integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script>
 </body>
+
 </html>
