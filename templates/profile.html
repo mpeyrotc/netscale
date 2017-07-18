@@ -103,6 +103,7 @@
                 </p>
             </div>
 
+            {% if profile != user_profile %}
             <div class="profile-section">
                     <span class="profile-title">
                         BEFRIEND
@@ -114,6 +115,7 @@
                     {% endif %}
                 </p>
             </div>
+            {% endif %}
 
 
         </div>
@@ -134,58 +136,6 @@
                         {% endfor %}
                     </tr>
                 </table>
-            </div>
-            <div class="profile-section">
-                    <span class="profile-title">
-                        COMPANIES
-                    </span>
-                <br>
-                This user does not want to show his contact list personally.
-                {#
-                <table>#}
-                    {#
-                    <tr>#}
-                        {#
-                        <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>
-                        #}
-                        {#
-                        <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>
-                        #}
-                        {#
-                        <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>
-                        #}
-                        {#
-                        <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>
-                        #}
-                        {#
-                        <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>
-                        #}
-                        {#
-                    </tr>
-                    #}
-                    {#
-                    <tr>#}
-                        {#
-                        <th><a href="">GOOGLE</a></th>
-                        #}
-                        {#
-                        <th><a href="">TESLA</a></th>
-                        #}
-                        {#
-                        <th><a href="">KPMG</a></th>
-                        #}
-                        {#
-                        <th><a href="">SANDISK</a></th>
-                        #}
-                        {#
-                        <th><a href="">APPLE</a></th>
-                        #}
-                        {#
-                    </tr>
-                    #}
-                    {#
-                </table>
-                #}
             </div>
 
         </div>
