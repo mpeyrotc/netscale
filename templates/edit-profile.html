@@ -75,6 +75,7 @@
 <div id="container" style="margin:20%;" align="center">
     <div id="settings-title">SETTINGS</div>
     <div id="settings-subtitle">Edit your profile</div>
+    <form enctype="multipart/form-data" method="post" action="{% url 'edit_profile' %}">
     {% for field in form.visible_fields %}
     {% if field.label == "Password" or field.label == "Confirm password" %}
     <input class="field-input" type="password" name="{{ field.name }}" id="{{ field.id_for_label }}"
