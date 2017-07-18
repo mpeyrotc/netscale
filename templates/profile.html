@@ -132,7 +132,7 @@
                     </tr>
                     <tr>
                         {% for friend in profile_friends %}
-                        <th><a href="">{{ friend }}</a></th>
+                        <th><a href="{{ url 'profiles' friend.user.id }}">{{ friend }}</a></th>
                         {% endfor %}
                     </tr>
                 </table>
