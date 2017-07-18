@@ -422,6 +422,7 @@ def network(request):
     sorted_result = sorted(result.items(), key=operator.itemgetter(1))
     context['result'] = reversed(sorted_result)
     context['levels'] = range(len(sorted_result) / 5)
+    context['profile'] = profile
 
     return render(request, 'network.html', context)
 
