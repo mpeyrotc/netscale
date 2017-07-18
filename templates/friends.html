@@ -73,24 +73,22 @@
         </div>
     </div>
 </div>
-
-
 <div id="container" style="margin:20%;" align="center">
-    <input type="search" id="search-large" placeholder="Search for a Company...">
-    <div align="center">
+    <input type="search" id="search-large" placeholder="Search for a Friend...">
+    <div align="center" style="margin-left: 20%;">
         <div class="search-section" align="center">
             <div class="search-title">
-                Your Top Companies
+                Your Friends
             </div>
-
-            <table>
-                {% for key, value in result %}
-                <tr>
-                    <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>
-                    <th><a href="">{{ key }} <br> {{ value }}</a></th>
-                </tr>
+            <div class="results">
+                {% for friend in result %}
+                <div class="listing">
+                    <a href="{% url 'profiles' friend.user.id %}"><span class="name">{{ friend.first_name }} {{ friend.last_name }}</span></a>
+                    <a href="mailto:{{ friend.gmail_account }}"><i class="material-icons"
+                                                                   style="font-size: 24px; margin: none;">mail_outline</i></a>
+                </div>
                 {% endfor %}
-            </table>
+            </div>
         </div>
     </div>
 </div>

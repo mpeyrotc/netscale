@@ -1,28 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>NetScale</title>
-    <meta charset='utf-8'/>
+    <meta charset="utf-8"/>
     {% load static %}
     {% load friendshiptags %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="NetScale">
+    <title>NetScale</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" media="all" type="text/css" href="../static/css/profile.css"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
 </head>
+
 <body>
 <!-- <input type="hidden" id="profile_contacts" name="profile_contacts" value="{{ profile.contacts }}"> -->
 
 <!--Add buttons to initiate auth sequence and sign out-->
-<p> Welcome to NetScale </p>
 <button id="authorize-button" style="display: none;">Authorize</button>
 <button id="signout-button" style="display: none;">Sign Out</button>
-<a href="{% url 'logout' %}">
-    <button style='float: right' class="btn btn-warning">Logout</button>
-</a>
-
-<form id="searchbox" method="post" action="{% url 'home' %}">
-    <input name='search_value' type="text" placeholder="Type here">
-    <input id="submit" type="submit" value="Search">
-    {% csrf_token %}
-</form>
-
 <pre id="content"></pre>
 
 <script type="text/javascript">
@@ -85,13 +84,13 @@
     }
 
     /**
-    * Get Thread with given ID.
-    *
-    * @param  {String} userId User's email address. The special value 'me'
-    * can be used to indicate the authenticated user.
-    * @param  {String} threadId ID of Thread to get.
-    * @param  {Function} callback Function to call when the request is complete.
-    */
+     * Get Thread with given ID.
+     *
+     * @param  {String} userId User's email address. The special value 'me'
+     * can be used to indicate the authenticated user.
+     * @param  {String} threadId ID of Thread to get.
+     * @param  {Function} callback Function to call when the request is complete.
+     */
     function getThread(userId, threadId, callback) {
         var request = gapi.client.gmail.users.threads.get({
             'userId': userId,
@@ -117,19 +116,19 @@
 
             if (true) {
                 listThreads('me', function (responseThreads) {
-                    console.log(responseThreads.length);
-                    //for (i = 0; i < responseThreads.length; i++) {
-                    var numThreads = 20;
+                        console.log(responseThreads.length);
+                        //for (i = 0; i < responseThreads.length; i++) {
+                        var numThreads = 20;
 
-                    if(getAll) {
-                        numThreads = responseThreads.length;
-                    }
+                        if (getAll) {
+                            numThreads = responseThreads.length;
+                        }
 
-                    for (var i = 0; i < Math.min(numThreads, responseThreads.length); i++) {
+                        for (var i = 0; i < Math.min(numThreads, responseThreads.length); i++) {
                             var thread = responseThreads[i];
 
                             getThread('me', '' + thread.id, function (response) {
-                                if(response.messages.length > 1) {
+                                if (response.messages.length > 1) {
                                     for (var j = 0; j < response.messages.length; j++) {
                                         var message = response.messages[j];
 
@@ -249,72 +248,132 @@
 
 
 </script>
-
-
-
-
-{{ profile.gmail_account }}
-
-<h2>your direct contacts:</h2>
-{% if my_result %}
-    {% for contact, value in my_result %}
-        <p>user has access to query with a score of {{ value }} through:</p>
-        {% for con, val in contact %}
-            <p>{{ con }} with {{ val }}</p>
-        {% endfor %}
-    {% endfor %}
-{% else %}
-    <p>no contact for the requested company.</p>
-{% endif %}
-
-<h2>your friends:</h2>
-
-{% if friend_result %}
-    the contacts you have through NetScale are:
-
-    {% for contact in friend_result %}
-        <p>user: {{ contact.first_name }} {{ contact.last_name }} has access to query. Email: {{ contact.gmail_account }}.</p>
-    {% endfor %}
-{% else %}
-    <p>no contact for the requested company.</p>
-{% endif %}
-
-<h2>your friends of friends:</h2>
-
-{% if thirdparty_result %}
-    the contacts you have through your contacts are:
-
-    {% for contact, value in thirdparty_result %}
-        <p>user: {{ contact.first_name }} {{ contact.last_name }} has access to query with a score of {{ value }}. Email: {{ contact.gmail_account }}.</p>
-    {% endfor %}
-{% else %}
-    <p>no contact for the requested company.</p>
-{% endif %}
-
-<p>All users:</p>
-{% for profile in user_profiles %}
-    {% if user_id != profile.user.id %}
-    <hr>
-    <div class='post_data'>
-        <a href='{% url 'profiles' profile.user.id %}'>{{ profile.user.username }}</a>
-        ({{ profile.first_name }} {{ profile.last_name }})</p>
+<nav>
+    <a href="{% url 'home' %}" style="float:left;"><img src="{% static 'imgs/logo-icon.png' %}" id="logo"/></a>
+    <div class="dropdown">
+        <a href="{% url 'profiles' profile.user.id %}" class="dropbtn">
+            <img src="{% static 'imgs/pictureplaceholder-small.png' %} " style="width: 2em; margin: none;"/>
+            {{ profile.first_name }} {{ profile.last_name }}
+        </a>
+        <div class="dropdown-content">
+            <a href="" data-toggle="modal" data-target="#requestsModal">Friend Requests</a>
+            <a href="{% url 'netscale_friends' %}">Friends</a>
+            <a href="{% url 'network' %}">Top Companies</a>
+            <a href="{% url 'edit_profile' %}">Settings</a>
+            <a href="{% url 'logout' %}" style="clear:both;">Logout</a>
+        </div>
     </div>
-    {% endif %}
-{% endfor %}
+    <!-- TODO: fix this later -->
+    <form id="searchbox" method="post" action="{% url 'home' %}">
+        <input name='search_value' type="search" placeholder="Search...">
+        {% csrf_token %}
+    </form>
+</nav>
 
-<hr>
-<p>All friends:</p>
-{% friends request.user %}
+<div class="modal fade" id="requestsModal" role="dialog">
+    <div class="modal-dialog">
 
-<p>Friend Requests:</p>
-{% for data in requests %}
-    <hr>
-    <div class='post_data'>
-        <a href='{% url 'profiles' data.profile.user.id %}'>{{ data.profile.user.username }}</a>
-        ({{ data.profile.first_name }} {{ data.profile.last_name }}) send you a friend request.
-        <a href='{% url 'accept_request' data.request%}'>accept?</a> or <a href='{% url 'reject_request' data.request%}'>reject?</a></p>
+        <!-- Modal content-->
+        <div class="modal-content">
+            <center>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="pm-title">
+                        FRIEND REQUESTS
+                    </div>
+                    <table id="friend-requests">
+                        {% for data in requests %} 
+                        <tr>
+                            <td class="request-name">{{ data.profile.first_name }} {{ data.profile.last_name }}</td>
+                            <td><a href="{% url 'accept_request' data.request %}"><i class="material-icons"
+                                                                                     style="color:#36CAE8;">person_add</i></a>
+                            </td>
+                            <td><a  href="{% url 'reject_request' data.request %}"><i class="material-icons"
+                                                                                      style="color:#F88451">close</i></a>
+                            </td>
+                        </tr>
+                         {% endfor %}
+                    </table>
+
+                </div>
+                <div class="modal-footer">
+                </div>
+
+            </center>
+        </div>
     </div>
-{% endfor %}
+</div>
+
+<div id="container" style="margin:20%;" align="center">
+    <form id="searchbox" method="post" action="{% url 'home' %}">
+        <input name='search_value' type="search" id="search-large" placeholder="Google">
+        {% csrf_token %}
+    </form>
+    <div align="center" style="margin-left: 20%;">
+        {% if my_result %}
+        <div class="search-section" align="center">
+            <div class="search-title">
+                Your Contacts
+            </div>
+            <div class="results">
+
+                {% for contact, value in my_result %}
+                <p>user has access to query with a score of {{ value }} through:</p>
+                {% for con, val in contact %}
+                <div class="listing">
+                    <span class="name">{{ con }}<span class="score">[{{ val }}]</span></span>
+                    <i class="material-icons" style="font-size: 24px; margin: none;">mail_outline</i>
+                </div>
+                {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        {% if friend_result %}
+        <div class="search-section" align="center">
+            <div class="search-title">
+                Your Friends
+            </div>
+            <div class="results">
+
+                the contacts you have through NetScale are:
+
+                {% for contact in friend_result %}
+                <div class="listing">
+                            <span class="name">{{ contact.first_name }} {{ contact.last_name }}<span
+                                    class="score">[{{ contact.gmail_account }}]</span></span>
+                    <i class="material-icons" style="font-size: 24px; margin: none;">mail_outline</i>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+        {% endif %}
+
+        {% if thirdparty_result %}
+        <div class="search-section" align="center">
+            <div class="search-title">
+                Your Friends of Friends
+            </div>
+            <div class="results">
+
+                the contacts you have through your contacts are:
+
+                {% for contact, value in thirdparty_result %}
+                <div class="listing">
+                        <span class="name">{{ contact.first_name }} {{ contact.last_name }}<span
+                                class="score">[{{ value }}, {{ contact.gmail_account }}]</span></span>
+                </div>
+                {% endfor %}
+
+
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
 
 <script async defer src="https://apis.google.com/js/api.js"
         onload="this.onload=function(){};handleClientLoad('{{ profile.gmail_account }}')"
@@ -325,12 +384,14 @@
 <script src="{% static 'js/netscale.js' %}"></script>
 
 <p id="status"></p>
-
-
-
-<a href='{% url 'network' %}'>Find my network</a>
-
-<a href='{% url 'edit_profile' %}'>edit my profile</a>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+        integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script>
 </body>
+
+
 </html>

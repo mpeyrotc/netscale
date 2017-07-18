@@ -494,3 +494,20 @@ def get_picture(request, id):
         return HttpResponse(profile.picture, content_type=content_type)
     else:
         return redirect(reverse('home'))
+
+@login_required
+def netscale_friends(request):
+    context = {'result': []}
+    profile = get_profile(request)
+    context['profile'] = profile
+
+    if profile.friends:
+        friends = Friend.objects.friends(request.user)
+
+        for friend in friends:
+            friend_profile = UserProfile.objects.filter(user__exact=
+                                                        User.objects.filter(id__exact=friend.id)[0])[0]
+
+            context['result'].append(friend_profile)
+
+    return render(request, 'friends.html', context)

@@ -33,5 +33,6 @@ urlpatterns = [
     url(r'^acceptRequest/(?P<req_id>\d+)$', mainApp.views.accept_request, name='accept_request'),
     url(r'^rejectRequest/(?P<req_id>\d+)$', mainApp.views.reject_request, name='reject_request'),
     url(r'^network$', mainApp.views.network, name='network'),
-    url(r'^edit_profile$', mainApp.views.edit_profile, name='edit_profile')
+    url(r'^edit_profile$', mainApp.views.edit_profile, name='edit_profile'),
+    url(r'^netscale-friends$', mainApp.views.netscale_friends, name='netscale_friends'),
 ]

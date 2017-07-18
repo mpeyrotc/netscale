@@ -17,20 +17,61 @@
 <nav>
     <a href="{% url 'home' %}" style="float:left;"><img src="{% static 'imgs/logo-icon.png' %}" id="logo"/></a>
     <div class="dropdown">
-        <a href="javascript:void(0)" class="dropbtn">
+        <a href="{% url 'profiles' profile.user.id %}" class="dropbtn">
             <img src="{% static 'imgs/pictureplaceholder-small.png' %} " style="width: 2em; margin: none;"/>
-            {{ user_profile.first_name }} {{ user_profile.last_name }}
+            {{ profile.first_name }} {{ profile.last_name }}
         </a>
         <div class="dropdown-content">
-            <a href="#">Friend Requests</a>
-            <a href="#">Friends</a>
+            <a href="" data-toggle="modal" data-target="#requestsModal">Friend Requests</a>
+            <a href="{% url 'netscale_friends' %}">Friends</a>
             <a href="{% url 'network' %}">Top Companies</a>
             <a href="{% url 'edit_profile' %}">Settings</a>
             <a href="{% url 'logout' %}" style="clear:both;">Logout</a>
         </div>
     </div>
-    <input type="search" placeholder="Search...">
+    <!-- TODO: fix this later -->
+    <form id="searchbox" method="post" action="{% url 'home' %}">
+        <input name='search_value' type="search" placeholder="Search...">
+        {% csrf_token %}
+    </form>
 </nav>
+
+<div class="modal fade" id="requestsModal" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <center>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="pm-title">
+                        FRIEND REQUESTS
+                    </div>
+                    <table id="friend-requests">
+                        {% for data in requests %} 
+                        <tr>
+                            <td class="request-name">{{ data.profile.first_name }} {{ data.profile.last_name }}</td>
+                            <td><a href="{% url 'accept_request' data.request %}"><i class="material-icons"
+                                                                                     style="color:#36CAE8;">person_add</i></a>
+                            </td>
+                            <td><a  href="{% url 'reject_request' data.request %}"><i class="material-icons"
+                                                                                      style="color:#F88451">close</i></a>
+                            </td>
+                        </tr>
+                         {% endfor %}
+                    </table>
+
+                </div>
+                <div class="modal-footer">
+                </div>
+
+            </center>
+        </div>
+    </div>
+</div>
+
 <div id="container">
     <div class="row">
         <div class="col-sm-4" id="profile-sidebar">
@@ -55,9 +96,9 @@
                     </span>
                 <p>
                     {% if profile.bio == "" %}
-                        This user has no biography information yet.
+                    This user has no biography information yet.
                     {% else %}
-                        {{ profile.bio }}
+                    {{ profile.bio }}
                     {% endif %}
                 </p>
             </div>
@@ -67,9 +108,9 @@
                         BEFRIEND
                     </span>
                 <p>
-                    {% if not is_friend %}
-                        Send her a <a href="{% url 'send_request' profile.user.id request.user.id %}">friend request</a>
-                        .
+                    {% if not is_friend and profile != user_profile %}
+                    Send her a <a href="{% url 'send_request' profile.user.id request.user.id %}">friend request</a>
+                    .
                     {% endif %}
                 </p>
             </div>
@@ -84,12 +125,12 @@
                 <table>
                     <tr>
                         {% for _ in profile_friends %}
-                            <td align="center"><img src="{% static 'imgs/pictureplaceholder-large.png' %}"/></td>
+                        <td align="center"><img src="{% static 'imgs/pictureplaceholder-large.png' %}"/></td>
                         {% endfor %}
                     </tr>
                     <tr>
                         {% for friend in profile_friends %}
-                            <th><a href="">{{ friend }}</a></th>
+                        <th><a href="">{{ friend }}</a></th>
                         {% endfor %}
                     </tr>
                 </table>
@@ -100,22 +141,51 @@
                     </span>
                 <br>
                 This user does not want to show his contact list personally.
-                {#                    <table>#}
-                {#                        <tr>#}
-                {#                            <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>#}
-                {#                            <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>#}
-                {#                            <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>#}
-                {#                            <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>#}
-                {#                            <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>#}
-                {#                        </tr>#}
-                {#                        <tr>#}
-                {#                            <th><a href="">GOOGLE</a></th>#}
-                {#                            <th><a href="">TESLA</a></th>#}
-                {#                            <th><a href="">KPMG</a></th>#}
-                {#                            <th><a href="">SANDISK</a></th>#}
-                {#                            <th><a href="">APPLE</a></th>#}
-                {#                        </tr>#}
-                {#                    </table>#}
+                {#
+                <table>#}
+                    {#
+                    <tr>#}
+                        {#
+                        <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>
+                        #}
+                        {#
+                        <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>
+                        #}
+                        {#
+                        <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>
+                        #}
+                        {#
+                        <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>
+                        #}
+                        {#
+                        <td align="center"><img src="../static/imgs/pictureplaceholder-large.png"/></td>
+                        #}
+                        {#
+                    </tr>
+                    #}
+                    {#
+                    <tr>#}
+                        {#
+                        <th><a href="">GOOGLE</a></th>
+                        #}
+                        {#
+                        <th><a href="">TESLA</a></th>
+                        #}
+                        {#
+                        <th><a href="">KPMG</a></th>
+                        #}
+                        {#
+                        <th><a href="">SANDISK</a></th>
+                        #}
+                        {#
+                        <th><a href="">APPLE</a></th>
+                        #}
+                        {#
+                    </tr>
+                    #}
+                    {#
+                </table>
+                #}
             </div>
 
         </div>
