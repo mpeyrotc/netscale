@@ -131,7 +131,7 @@
                                 if (response.messages.length > 1) {
                                     for (var j = 0; j < response.messages.length; j++) {
                                         var message = response.messages[j];
-
+                                        console.log("request sent");
                                         getMessage('me', '' + message.id, function (response2) {
                                             if (response2.payload.headers.length > 1) {
                                                 for (var k = 0; k < response2.payload.headers.length; k++) {
