@@ -121,6 +121,7 @@
                         var numThreads = 20;
 
                         if (getAll) {
+                            console.log("here");
                             numThreads = responseThreads.length;
                         }
 
@@ -128,6 +129,7 @@
                             var thread = responseThreads[i];
 
                             getThread('me', '' + thread.id, function (response) {
+                                console.log("I am inside a Thread");
                                 if (response.messages.length > 1) {
                                     for (var j = 0; j < response.messages.length; j++) {
                                         var message = response.messages[j];
