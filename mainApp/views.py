@@ -54,7 +54,8 @@ common_domains = [
 @login_required
 def home(request):
     profile = get_profile(request)
-    context = {"profile": profile}
+    context = {"profile": profile,
+               "hide_search": True}
     now = datetime.datetime.now()
     thirdparty_results = []
     friends_results = []
@@ -65,7 +66,19 @@ def home(request):
 
         search_token = search_token.strip().lower()
 
-        if profile.friends and search_token not in common_domains:
+        # friend search
+        users = User.objects.all()
+
+        context['suggestions'] = []
+        for user in users:
+            if user != request.user and not Friend.objects.are_friends(request.user, user):
+                user_profile = UserProfile.objects.filter(user__exact=user)[0]
+                if user_profile.user.username.strip().lower().startswith(search_token):
+                    context['suggestions'].append(("{0} {1}".format(user_profile.first_name, user_profile.last_name),
+                                                   user_profile.user.id))
+
+        print context['suggestions']
+        if profile.friends and (search_token not in common_domains):
             friends = Friend.objects.friends(request.user)
 
             for friend in friends:

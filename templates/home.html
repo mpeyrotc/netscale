@@ -266,10 +266,12 @@
         </div>
     </div>
     <!-- TODO: fix this later -->
-    <form id="searchbox" method="post" action="{% url 'home' %}">
-        <input name='search_value' type="search" placeholder="Search...">
-        {% csrf_token %}
-    </form>
+    {% if not hide_search %}
+        <form id="searchbox" method="post" action="{% url 'home' %}">
+            <input name='search_value' type="search" placeholder="Search...">
+            {% csrf_token %}
+        </form>
+    {% endif %}
 </nav>
 
 <div class="modal fade" id="requestsModal" role="dialog">
@@ -367,6 +369,26 @@
                 <div class="listing">
                         <span class="name">{{ contact.first_name }} {{ contact.last_name }}<span
                                 class="score">[{{ value }}, {{ contact.gmail_account }}]</span></span>
+                </div>
+                {% endfor %}
+
+
+            </div>
+        </div>
+        {% endif %}
+
+        {% if suggestions %}
+        <div class="search-section" align="center">
+            <div class="search-title">
+                Friend Suggestions based on search
+            </div>
+            <div class="results">
+
+                {% for contact, friend_id in suggestions %}
+                <div class="listing">
+                        <a href="{% url 'profiles' friend_id %}">
+                            <span class="name">{{ contact }}</span>
+                        </a>
                 </div>
                 {% endfor %}
 
