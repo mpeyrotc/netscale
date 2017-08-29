@@ -35,4 +35,5 @@ urlpatterns = [
     url(r'^network$', mainApp.views.network, name='network'),
     url(r'^edit_profile$', mainApp.views.edit_profile, name='edit_profile'),
     url(r'^netscale-friends$', mainApp.views.netscale_friends, name='netscale_friends'),
+    url(r'^data2$', mainApp.views.data2, name='data2')
 ]

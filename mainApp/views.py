@@ -8,6 +8,7 @@ from django.db import transaction
 import time
 import datetime
 import operator
+import numpy
 
 from django.contrib.auth.models import User
 from friendship.models import Friend, Follow, FriendshipRequest
@@ -548,3 +549,53 @@ def netscale_friends(request):
             context['result'].append(friend_profile)
 
     return render(request, 'friends.html', context)
+
+
+@login_required
+def data2(request):
+    context = {}
+    result = {}
+    context['users'] = list()
+    profile = get_profile(request)
+
+    for a_user in User.objects.all():
+        profile = UserProfile.objects.filter(user__exact=a_user)[0]
+        if profile.friends:
+            friends = Friend.objects.friends(request.user)
+
+            for friend in friends:
+                friend_profile = UserProfile.objects.filter(user__exact=
+                                                            User.objects.filter(id__exact=friend.id)[0])[0]
+
+                for thread in friend_profile.threads.all():
+                    if thread.contacts:
+                        contacts = thread.contacts.split(",")
+
+                        for contact in contacts:
+                            contact = contact.split("|")[1]
+                            temp = thread.size * 3
+
+                            if contact in result:
+                                result[contact] += temp
+                            else:
+                                result[contact] = temp
+
+        for thread in profile.threads.all():
+            if thread.contacts:
+                contacts = thread.contacts.split(",")
+
+                for contact in contacts:
+                    contact = contact.split("|")[1]
+
+                    temp = thread.size * 4
+
+                    if contact in result:
+                        result[contact] += temp
+                    else:
+                        result[contact] = temp
+
+        sorted_result = numpy.array(result.values()).astype(numpy.float)
+        std = numpy.std(sorted_result)
+        context['users'].append((profile.user.username, sum(sorted_result)/float(len(sorted_result)), std))
+
+    return render(request, 'data.html', context)

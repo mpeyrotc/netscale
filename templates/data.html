@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>data</title>
+</head>
+<body>
+{% for username, avg, std in users %}
+    <div>{{ username }}: {{ avg }} ({{ std }})</div>
+    <p></p>
+    <hr>
+{% endfor %}
+</body>
+</html>
