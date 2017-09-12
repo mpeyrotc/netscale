@@ -9,3 +9,4 @@ boto==2.39.0
 wheel==0.29.0
 simplejson==3.10.0
 Pillow==3.1.1
+Numpy==1.11.1
